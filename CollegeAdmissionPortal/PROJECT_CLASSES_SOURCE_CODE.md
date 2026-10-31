@@ -1,30 +1,27 @@
-# College Admission Portal - Refactored Backend Architecture & Source Code
+# College Admission Portal - Pure JDK Backend Architecture & Source Code
 
-This document provides the complete source code of the refactored, beginner-friendly Core Java backend for the **College Admission Portal** (Orchid College of Engineering & Technology).
+This document provides the complete source code of the **Pure Core Java (JDK 8+)** backend for the **College Admission Portal** (Orchid College of Engineering & Technology).
+
+All external framework dependencies and separate API handler architectures have been completely removed. The system runs directly on Java's built-in `com.sun.net.httpserver.HttpServer`.
 
 ---
 
 ## 1. Backend Architecture & OOP Classification
 
-| # | Java File | Lines | Primary OOP Role / Responsibility | Key Methods / Capabilities |
+| # | Java File | Lines | Primary OOP Role / Responsibility | Key Capabilities |
 |---|---|---|---|---|
 | 1 | `User.java` | 74 | Abstract Base Class for Users | Core OOP concept: Abstraction & Inheritance base. |
 | 2 | `Student.java` | 35 | Student Entity (Inherits User) | Core OOP concept: Inheritance & Polymorphism (`getRoleDescription()`). |
 | 3 | `Admin.java` | 35 | Admin Entity (Inherits User) | Core OOP concept: Inheritance & Polymorphism (`getRoleDescription()`). |
-| 4 | `Document.java` | 97 | Document Entity & Metadata Helper | Encapsulates document file types, names, sizes and formatting. |
-| 5 | `Application.java` | 200 | Admission Application Entity | Encapsulates applicant marks, course choices, multi-branch preferences, and status. |
-| 6 | `FileStorage.java` | 125 | Data Persistence Manager | Encapsulates plain text file reading/writing for students, admins, applications and documents. |
-| 7 | `AdmissionSystem.java` | 195 | Central Admission Controller | Coordinates registration, authentication, application submission, document verification, and seat allocation. |
-| 8 | `HttpHelper.java` | 118 | HTTP Request & JSON Serialization Helper | Handles query string decoding, UTF-8 form parsing, byte streams, and JSON formatting. |
-| 9 | `StaticFileHandler.java` | 87 | Web Portal Static File Server | Serves HTML, CSS, JavaScript, images, and documents with MIME type mapping. |
-| 10 | `StudentApiHandler.java` | 149 | Student REST API Endpoints | Handles `/api/register`, `/api/login`, `/api/apply`, `/api/status`, `/api/student/allocation-response`. |
-| 11 | `AdminApiHandler.java` | 113 | Admin REST API Endpoints | Handles `/api/admin-login`, `/api/admin/applications`, `/api/admin/action`, `/api/admin/verify-documents`, `/api/admin/allocate-branch`. |
-| 12 | `DocumentApiHandler.java` | 112 | Document Upload & Download API | Handles `/api/upload-document`, `/api/document/view`, `/api/document/download`. |
-| 13 | `Main.java` | 71 | Server Application Entry Point | Configures routes, initializes HTTP server on port 8080, and starts the system. |
+| 4 | `Document.java` | 97 | Document Entity & Metadata Helper | Encapsulates document types, titles, sizes and file formatting. |
+| 5 | `Application.java` | 200 | Admission Application Model | Encapsulates applicant marks, course choices, multi-branch preferences, and status. |
+| 6 | `FileStorage.java` | 125 | Pure Java File Persistence | Direct file I/O (`BufferedReader`/`BufferedWriter`) for plain text storage of students, admins, and applications. |
+| 7 | `AdmissionSystem.java` | 195 | Admission Management Controller | Coordinates student registration, login validation, application submission, verification, and branch allocation. |
+| 8 | `Main.java` | 332 | Pure JDK HTTP Web Server | Uses `com.sun.net.httpserver.HttpServer` to serve static web files and handle form submissions directly in pure Java. |
 
 ---
 
-## 2. Complete Source Code for All Classes
+## 2. Complete Source Code for All Pure JDK Classes
 
 ### 1. `User.java` (74 lines)
 
@@ -206,7 +203,7 @@ public class Admin extends User {
 ### 4. `Document.java` (97 lines)
 
 > **Purpose**: Document Entity & Metadata Helper  
-> **Role**: Encapsulates document file types, names, sizes and formatting.
+> **Role**: Encapsulates document types, titles, sizes and file formatting.
 
 ```java
 public class Document {
@@ -313,7 +310,7 @@ public class Document {
 
 ### 5. `Application.java` (200 lines)
 
-> **Purpose**: Admission Application Entity  
+> **Purpose**: Admission Application Model  
 > **Role**: Encapsulates applicant marks, course choices, multi-branch preferences, and status.
 
 ```java
@@ -524,8 +521,8 @@ public class Application {
 
 ### 6. `FileStorage.java` (125 lines)
 
-> **Purpose**: Data Persistence Manager  
-> **Role**: Encapsulates plain text file reading/writing for students, admins, applications and documents.
+> **Purpose**: Pure Java File Persistence  
+> **Role**: Direct file I/O (`BufferedReader`/`BufferedWriter`) for plain text storage of students, admins, and applications.
 
 ```java
 import java.io.*;
@@ -660,8 +657,8 @@ public class FileStorage {
 
 ### 7. `AdmissionSystem.java` (195 lines)
 
-> **Purpose**: Central Admission Controller  
-> **Role**: Coordinates registration, authentication, application submission, document verification, and seat allocation.
+> **Purpose**: Admission Management Controller  
+> **Role**: Coordinates student registration, login validation, application submission, verification, and branch allocation.
 
 ```java
 import java.io.File;
@@ -864,713 +861,340 @@ public final class AdmissionSystem {
 
 ---
 
-### 8. `HttpHelper.java` (118 lines)
+### 8. `Main.java` (332 lines)
 
-> **Purpose**: HTTP Request & JSON Serialization Helper  
-> **Role**: Handles query string decoding, UTF-8 form parsing, byte streams, and JSON formatting.
+> **Purpose**: Pure JDK HTTP Web Server  
+> **Role**: Uses `com.sun.net.httpserver.HttpServer` to serve static web files and handle form submissions directly in pure Java.
 
 ```java
 import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpServer;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.InetSocketAddress;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class HttpHelper {
-
-    public static void sendJsonResponse(HttpExchange exchange, int statusCode, String jsonResponse) throws IOException {
-        byte[] bytes = jsonResponse.getBytes(StandardCharsets.UTF_8);
-        exchange.getResponseHeaders().set("Content-Type", "application/json; charset=UTF-8");
-        exchange.sendResponseHeaders(statusCode, bytes.length);
-        try (OutputStream os = exchange.getResponseBody()) {
-            os.write(bytes);
-        }
-    }
-
-    public static Map<String, String> parseRequestBody(HttpExchange exchange) throws IOException {
-        Map<String, String> params = new HashMap<>();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8))) {
-            StringBuilder body = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) body.append(line);
-
-            for (String pair : body.toString().split("&")) {
-                String[] kv = pair.split("=");
-                if (kv.length >= 2) {
-                    params.put(URLDecoder.decode(kv[0], StandardCharsets.UTF_8.name()),
-                               URLDecoder.decode(kv[1], StandardCharsets.UTF_8.name()));
-                } else if (kv.length == 1 && !kv[0].isEmpty()) {
-                    params.put(URLDecoder.decode(kv[0], StandardCharsets.UTF_8.name()), "");
-                }
-            }
-        }
-        return params;
-    }
-
-    public static Map<String, String> parseQueryString(String query) {
-        Map<String, String> params = new HashMap<>();
-        if (query == null || query.isEmpty()) return params;
-
-        for (String pair : query.split("&")) {
-            String[] kv = pair.split("=");
-            if (kv.length >= 2) {
-                params.put(URLDecoder.decode(kv[0], StandardCharsets.UTF_8),
-                           URLDecoder.decode(kv[1], StandardCharsets.UTF_8));
-            } else if (kv.length == 1 && !kv[0].isEmpty()) {
-                params.put(URLDecoder.decode(kv[0], StandardCharsets.UTF_8), "");
-            }
-        }
-        return params;
-    }
-
-    public static byte[] readAllBytes(InputStream is) throws IOException {
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        byte[] data = new byte[8192];
-        int nRead;
-        while ((nRead = is.read(data, 0, data.length)) != -1) {
-            buffer.write(data, 0, nRead);
-        }
-        return buffer.toByteArray();
-    }
-
-    public static String escapeJson(String str) {
-        if (str == null) return "";
-        return str.replace("\\", "\\\\")
-                  .replace("\"", "\\\"")
-                  .replace("\b", "\\b")
-                  .replace("\f", "\\f")
-                  .replace("\n", "\\n")
-                  .replace("\r", "\\r")
-                  .replace("\t", "\\t");
-    }
-
-    public static String formatApplicationJson(Application app, String phone) {
-        StringBuilder prefsJson = new StringBuilder("[");
-        List<String> prefs = app.getBranchPreferences();
-        for (int i = 0; i < prefs.size(); i++) {
-            prefsJson.append("\"").append(escapeJson(prefs.get(i))).append("\"");
-            if (i < prefs.size() - 1) prefsJson.append(",");
-        }
-        prefsJson.append("]");
-
-        StringBuilder docsJson = new StringBuilder("{");
-        Map<String, String> docs = app.getUploadedDocuments();
-        int docIndex = 0;
-        for (Map.Entry<String, String> entry : docs.entrySet()) {
-            if (docIndex > 0) docsJson.append(",");
-            docsJson.append("\"").append(escapeJson(entry.getKey())).append("\":\"")
-                    .append(escapeJson(entry.getValue())).append("\"");
-            docIndex++;
-        }
-        docsJson.append("}");
-
-        return String.format(
-            "{\"found\":true,\"appId\":\"%s\",\"name\":\"%s\",\"email\":\"%s\",\"phone\":\"%s\"," +
-            "\"ssc\":%.2f,\"hsc\":%.2f,\"cet\":%.2f,\"course\":\"%s\"," +
-            "\"category\":\"%s\",\"status\":\"%s\",\"remarks\":\"%s\"," +
-            "\"preferences\":%s,\"allocatedBranch\":\"%s\",\"allocationStatus\":\"%s\"," +
-            "\"verificationStatus\":\"%s\",\"documents\":%s,\"allocationRemarks\":\"%s\"}",
-            escapeJson(app.getApplicationId()), escapeJson(app.getStudentName()),
-            escapeJson(app.getStudentEmail()), escapeJson(phone),
-            app.getSscMarks(), app.getHscMarks(), app.getCetScore(),
-            escapeJson(app.getCourseChoice()), escapeJson(app.getCategory()),
-            escapeJson(app.getStatus()), escapeJson(app.getRemarks()),
-            prefsJson.toString(), escapeJson(app.getAllocatedBranch()),
-            escapeJson(app.getAllocationStatus()), escapeJson(app.getVerificationStatus()),
-            docsJson.toString(), escapeJson(app.getAllocationRemarks())
-        );
-    }
-}
-
-```
-
----
-
-### 9. `StaticFileHandler.java` (87 lines)
-
-> **Purpose**: Web Portal Static File Server  
-> **Role**: Serves HTML, CSS, JavaScript, images, and documents with MIME type mapping.
-
-```java
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
-
-public class StaticFileHandler implements HttpHandler {
-
-    private final String frontendPath;
-
-    public StaticFileHandler(String frontendPath) {
-        this.frontendPath = frontendPath;
-    }
-
-    @Override
-    public void handle(HttpExchange exchange) throws IOException {
-        String requestPath = exchange.getRequestURI().getPath();
-        if (requestPath == null || requestPath.isEmpty() || requestPath.equals("/")) {
-            requestPath = "/index.html";
-        }
-        if (requestPath.length() > 1 && requestPath.endsWith("/")) {
-            requestPath = requestPath.substring(0, requestPath.length() - 1);
-        }
-
-        File baseDir = new File(frontendPath);
-        String relativePath = requestPath.startsWith("/") ? requestPath.substring(1) : requestPath;
-
-        if (relativePath.equalsIgnoreCase("favicon.ico")) {
-            File fav = new File(baseDir, relativePath);
-            if (!fav.exists()) {
-                exchange.sendResponseHeaders(204, -1);
-                exchange.close();
-                return;
-            }
-        }
-
-        File file = new File(baseDir, relativePath);
-        if (!file.exists() || file.isDirectory()) {
-            File htmlFile = new File(baseDir, relativePath + ".html");
-            if (htmlFile.exists() && htmlFile.isFile()) {
-                file = htmlFile;
-            }
-        }
-
-        if (file.exists() && file.isDirectory()) {
-            File indexFile = new File(file, "index.html");
-            if (indexFile.exists() && indexFile.isFile()) {
-                file = indexFile;
-            }
-        }
-
-        if (file.exists() && file.isFile()) {
-            String contentType = getContentType(file.getName().toLowerCase());
-            byte[] fileBytes = new byte[(int) file.length()];
-            try (FileInputStream fis = new FileInputStream(file)) {
-                fis.read(fileBytes);
-            }
-            exchange.getResponseHeaders().set("Content-Type", contentType);
-            exchange.sendResponseHeaders(200, fileBytes.length);
-            try (OutputStream os = exchange.getResponseBody()) {
-                os.write(fileBytes);
-            }
-        } else {
-            String notFound = "<h1>404 Not Found</h1><p>The requested page was not found.</p>";
-            exchange.getResponseHeaders().set("Content-Type", "text/html; charset=UTF-8");
-            exchange.sendResponseHeaders(404, notFound.length());
-            try (OutputStream os = exchange.getResponseBody()) {
-                os.write(notFound.getBytes(StandardCharsets.UTF_8));
-            }
-        }
-    }
-
-    private String getContentType(String name) {
-        if (name.endsWith(".html")) return "text/html; charset=UTF-8";
-        if (name.endsWith(".css")) return "text/css; charset=UTF-8";
-        if (name.endsWith(".js")) return "application/javascript; charset=UTF-8";
-        if (name.endsWith(".png")) return "image/png";
-        if (name.endsWith(".jpg") || name.endsWith(".jpeg")) return "image/jpeg";
-        if (name.endsWith(".pdf")) return "application/pdf";
-        if (name.endsWith(".svg")) return "image/svg+xml";
-        if (name.endsWith(".ico")) return "image/x-icon";
-        if (name.endsWith(".json")) return "application/json; charset=UTF-8";
-        return "text/plain";
-    }
-}
-
-```
-
----
-
-### 10. `StudentApiHandler.java` (149 lines)
-
-> **Purpose**: Student REST API Endpoints  
-> **Role**: Handles `/api/register`, `/api/login`, `/api/apply`, `/api/status`, `/api/student/allocation-response`.
-
-```java
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-public class StudentApiHandler implements HttpHandler {
-
-    private final AdmissionSystem system;
-
-    public StudentApiHandler(AdmissionSystem system) {
-        this.system = system;
-    }
-
-    @Override
-    public void handle(HttpExchange exchange) throws IOException {
-        String path = exchange.getRequestURI().getPath();
-        if (path.endsWith("/register")) {
-            handleRegister(exchange);
-        } else if (path.endsWith("/login")) {
-            handleLogin(exchange);
-        } else if (path.endsWith("/apply")) {
-            handleApply(exchange);
-        } else if (path.endsWith("/status")) {
-            handleStatus(exchange);
-        } else if (path.endsWith("/allocation-response")) {
-            handleAllocationResponse(exchange);
-        } else {
-            HttpHelper.sendJsonResponse(exchange, 404, "{\"success\":false,\"message\":\"Endpoint not found\"}");
-        }
-    }
-
-    private void handleRegister(HttpExchange exchange) throws IOException {
-        if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
-            HttpHelper.sendJsonResponse(exchange, 405, "{\"success\":false,\"message\":\"Method not allowed\"}");
-            return;
-        }
-        Map<String, String> params = HttpHelper.parseRequestBody(exchange);
-        String name = params.getOrDefault("name", "").trim();
-        String email = params.getOrDefault("email", "").trim();
-        String password = params.getOrDefault("password", "").trim();
-        String phone = params.getOrDefault("phone", "").trim();
-
-        if (name.isEmpty() || email.isEmpty() || password.isEmpty() || phone.isEmpty()) {
-            HttpHelper.sendJsonResponse(exchange, 400, "{\"success\":false,\"message\":\"All fields are required!\"}");
-            return;
-        }
-        if (system.registerStudent(name, email, password, phone)) {
-            HttpHelper.sendJsonResponse(exchange, 200, "{\"success\":true,\"message\":\"Registration successful! You can now login.\"}");
-        } else {
-            HttpHelper.sendJsonResponse(exchange, 400, "{\"success\":false,\"message\":\"This email is already registered! Please login.\"}");
-        }
-    }
-
-    private void handleLogin(HttpExchange exchange) throws IOException {
-        if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
-            HttpHelper.sendJsonResponse(exchange, 405, "{\"success\":false,\"message\":\"Method not allowed\"}");
-            return;
-        }
-        Map<String, String> params = HttpHelper.parseRequestBody(exchange);
-        Student student = system.authenticateStudent(params.get("email"), params.get("password"));
-        if (student != null) {
-            String json = String.format("{\"success\":true,\"id\":\"%s\",\"name\":\"%s\",\"email\":\"%s\",\"phone\":\"%s\",\"message\":\"Login successful!\"}",
-                    HttpHelper.escapeJson(student.getId()), HttpHelper.escapeJson(student.getName()),
-                    HttpHelper.escapeJson(student.getEmail()), HttpHelper.escapeJson(student.getPhoneNumber()));
-            HttpHelper.sendJsonResponse(exchange, 200, json);
-        } else {
-            HttpHelper.sendJsonResponse(exchange, 401, "{\"success\":false,\"message\":\"Invalid email or password! Please check credentials.\"}");
-        }
-    }
-
-    private void handleApply(HttpExchange exchange) throws IOException {
-        if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
-            HttpHelper.sendJsonResponse(exchange, 405, "{\"success\":false,\"message\":\"Method not allowed\"}");
-            return;
-        }
-        Map<String, String> params = HttpHelper.parseRequestBody(exchange);
-        double ssc, hsc, cet;
-        try {
-            ssc = Double.parseDouble(params.getOrDefault("sscMarks", "0"));
-            hsc = Double.parseDouble(params.getOrDefault("hscMarks", "0"));
-            cet = Double.parseDouble(params.getOrDefault("cetScore", "0"));
-        } catch (NumberFormatException e) {
-            HttpHelper.sendJsonResponse(exchange, 400, "{\"success\":false,\"message\":\"Please enter valid numerical marks!\"}");
-            return;
-        }
-
-        List<String> prefs = new ArrayList<>();
-        String prefRaw = params.getOrDefault("preferences", "");
-        if (!prefRaw.isEmpty()) {
-            for (String p : prefRaw.split("[,;]")) {
-                String clean = p.trim();
-                if (!clean.isEmpty() && !prefs.contains(clean)) prefs.add(clean);
-            }
-        }
-        String course = params.getOrDefault("course", "");
-        if (prefs.isEmpty() && !course.isEmpty()) prefs.add(course.trim());
-
-        Application app = system.submitApplication(params.getOrDefault("email", ""), params.getOrDefault("name", ""),
-                ssc, hsc, cet, course, params.getOrDefault("category", "General"), prefs);
-
-        String json = String.format("{\"success\":true,\"appId\":\"%s\",\"message\":\"Application submitted successfully!\"}",
-                HttpHelper.escapeJson(app.getApplicationId()));
-        HttpHelper.sendJsonResponse(exchange, 200, json);
-    }
-
-    private void handleStatus(HttpExchange exchange) throws IOException {
-        if (!"GET".equalsIgnoreCase(exchange.getRequestMethod())) {
-            HttpHelper.sendJsonResponse(exchange, 405, "{\"success\":false,\"message\":\"Method not allowed\"}");
-            return;
-        }
-        Map<String, String> q = HttpHelper.parseQueryString(exchange.getRequestURI().getQuery());
-        Application app = system.getApplication(q.getOrDefault("appId", q.get("email")));
-
-        if (app != null) {
-            Student student = system.getStudentByEmail(app.getStudentEmail());
-            String phone = student != null ? student.getPhoneNumber() : "";
-            HttpHelper.sendJsonResponse(exchange, 200, HttpHelper.formatApplicationJson(app, phone));
-        } else {
-            HttpHelper.sendJsonResponse(exchange, 200, "{\"found\":false,\"message\":\"No application found for this candidate.\"}");
-        }
-    }
-
-    private void handleAllocationResponse(HttpExchange exchange) throws IOException {
-        if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
-            HttpHelper.sendJsonResponse(exchange, 405, "{\"success\":false,\"message\":\"Method not allowed\"}");
-            return;
-        }
-        Map<String, String> params = HttpHelper.parseRequestBody(exchange);
-        String appId = params.getOrDefault("appId", "");
-        String decision = params.getOrDefault("action", "");
-        String remarks = params.getOrDefault("remarks", "");
-
-        if (appId.isEmpty() || decision.isEmpty()) {
-            HttpHelper.sendJsonResponse(exchange, 400, "{\"success\":false,\"message\":\"Application ID and action are required!\"}");
-            return;
-        }
-
-        if (system.respondToAllocation(appId, decision, remarks)) {
-            String msg = "Accept".equalsIgnoreCase(decision)
-                    ? "Congratulations! You have accepted the allocated branch. Your admission is CONFIRMED."
-                    : "Allocation rejected. Your application has been returned to the Admission Committee for review and reallocation.";
-            HttpHelper.sendJsonResponse(exchange, 200, "{\"success\":true,\"message\":\"" + msg + "\"}");
-        } else {
-            HttpHelper.sendJsonResponse(exchange, 400, "{\"success\":false,\"message\":\"Failed to process allocation decision. Application not found.\"}");
-        }
-    }
-}
-
-```
-
----
-
-### 11. `AdminApiHandler.java` (113 lines)
-
-> **Purpose**: Admin REST API Endpoints  
-> **Role**: Handles `/api/admin-login`, `/api/admin/applications`, `/api/admin/action`, `/api/admin/verify-documents`, `/api/admin/allocate-branch`.
-
-```java
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Map;
-
-public class AdminApiHandler implements HttpHandler {
-
-    private final AdmissionSystem system;
-
-    public AdminApiHandler(AdmissionSystem system) {
-        this.system = system;
-    }
-
-    @Override
-    public void handle(HttpExchange exchange) throws IOException {
-        String path = exchange.getRequestURI().getPath();
-        if (path.endsWith("/admin-login")) {
-            handleLogin(exchange);
-        } else if (path.endsWith("/applications")) {
-            handleApplications(exchange);
-        } else if (path.endsWith("/action")) {
-            handleAction(exchange);
-        } else if (path.endsWith("/verify-documents")) {
-            handleVerifyDocuments(exchange);
-        } else if (path.endsWith("/allocate-branch")) {
-            handleAllocateBranch(exchange);
-        } else {
-            HttpHelper.sendJsonResponse(exchange, 404, "{\"success\":false,\"message\":\"Endpoint not found\"}");
-        }
-    }
-
-    private void handleLogin(HttpExchange exchange) throws IOException {
-        if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
-            HttpHelper.sendJsonResponse(exchange, 405, "{\"success\":false,\"message\":\"Method not allowed\"}");
-            return;
-        }
-        Map<String, String> params = HttpHelper.parseRequestBody(exchange);
-        Admin admin = system.authenticateAdmin(params.get("email"), params.get("password"));
-        if (admin != null) {
-            String json = String.format("{\"success\":true,\"id\":\"%s\",\"name\":\"%s\",\"email\":\"%s\",\"role\":\"%s\",\"message\":\"Admin authentication successful!\"}",
-                    HttpHelper.escapeJson(admin.getId()), HttpHelper.escapeJson(admin.getName()),
-                    HttpHelper.escapeJson(admin.getEmail()), HttpHelper.escapeJson(admin.getRoleDescription()));
-            HttpHelper.sendJsonResponse(exchange, 200, json);
-        } else {
-            HttpHelper.sendJsonResponse(exchange, 401, "{\"success\":false,\"message\":\"Invalid Admin credentials! Access Denied.\"}");
-        }
-    }
-
-    private void handleApplications(HttpExchange exchange) throws IOException {
-        if (!"GET".equalsIgnoreCase(exchange.getRequestMethod())) {
-            HttpHelper.sendJsonResponse(exchange, 405, "{\"success\":false,\"message\":\"Method not allowed\"}");
-            return;
-        }
-        ArrayList<Application> allApps = system.getAllApplications();
-        StringBuilder sb = new StringBuilder("[");
-        for (int i = 0; i < allApps.size(); i++) {
-            Application a = allApps.get(i);
-            Student s = system.getStudentByEmail(a.getStudentEmail());
-            sb.append(HttpHelper.formatApplicationJson(a, s != null ? s.getPhoneNumber() : ""));
-            if (i < allApps.size() - 1) sb.append(",");
-        }
-        sb.append("]");
-        HttpHelper.sendJsonResponse(exchange, 200, sb.toString());
-    }
-
-    private void handleAction(HttpExchange exchange) throws IOException {
-        if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
-            HttpHelper.sendJsonResponse(exchange, 405, "{\"success\":false,\"message\":\"Method not allowed\"}");
-            return;
-        }
-        Map<String, String> p = HttpHelper.parseRequestBody(exchange);
-        String action = p.getOrDefault("action", "");
-        if (system.updateApplicationStatus(p.get("appId"), action, p.get("remarks"))) {
-            HttpHelper.sendJsonResponse(exchange, 200, "{\"success\":true,\"message\":\"Application status updated to " + HttpHelper.escapeJson(action) + "!\"}");
-        } else {
-            HttpHelper.sendJsonResponse(exchange, 404, "{\"success\":false,\"message\":\"Application ID not found.\"}");
-        }
-    }
-
-    private void handleVerifyDocuments(HttpExchange exchange) throws IOException {
-        if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
-            HttpHelper.sendJsonResponse(exchange, 405, "{\"success\":false,\"message\":\"Method not allowed\"}");
-            return;
-        }
-        Map<String, String> p = HttpHelper.parseRequestBody(exchange);
-        String status = p.getOrDefault("status", "Documents Verified");
-        if (system.verifyApplicationDocuments(p.get("appId"), status, p.get("remarks"))) {
-            HttpHelper.sendJsonResponse(exchange, 200, "{\"success\":true,\"message\":\"Document verification updated to " + HttpHelper.escapeJson(status) + "!\"}");
-        } else {
-            HttpHelper.sendJsonResponse(exchange, 404, "{\"success\":false,\"message\":\"Application ID not found.\"}");
-        }
-    }
-
-    private void handleAllocateBranch(HttpExchange exchange) throws IOException {
-        if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
-            HttpHelper.sendJsonResponse(exchange, 405, "{\"success\":false,\"message\":\"Method not allowed\"}");
-            return;
-        }
-        Map<String, String> p = HttpHelper.parseRequestBody(exchange);
-        String appId = p.getOrDefault("appId", "");
-        String branch = p.getOrDefault("branch", "");
-        if (appId.isEmpty() || branch.isEmpty()) {
-            HttpHelper.sendJsonResponse(exchange, 400, "{\"success\":false,\"message\":\"Application ID and branch must be provided!\"}");
-            return;
-        }
-        if (system.allocateBranch(appId, branch, p.get("remarks"))) {
-            HttpHelper.sendJsonResponse(exchange, 200, "{\"success\":true,\"message\":\"Branch '" + HttpHelper.escapeJson(branch) + "' allocated successfully! Decision sent to candidate.\"}");
-        } else {
-            HttpHelper.sendJsonResponse(exchange, 404, "{\"success\":false,\"message\":\"Application ID not found.\"}");
-        }
-    }
-}
-
-```
-
----
-
-### 12. `DocumentApiHandler.java` (112 lines)
-
-> **Purpose**: Document Upload & Download API  
-> **Role**: Handles `/api/upload-document`, `/api/document/view`, `/api/document/download`.
-
-```java
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Map;
-
-public class DocumentApiHandler implements HttpHandler {
-
-    private final AdmissionSystem system;
-
-    public DocumentApiHandler(AdmissionSystem system) {
-        this.system = system;
-    }
-
-    @Override
-    public void handle(HttpExchange exchange) throws IOException {
-        String path = exchange.getRequestURI().getPath();
-        if (path.endsWith("/upload-document")) {
-            handleUpload(exchange);
-        } else if (path.endsWith("/document/view")) {
-            handleViewOrDownload(exchange, false);
-        } else if (path.endsWith("/document/download")) {
-            handleViewOrDownload(exchange, true);
-        } else {
-            HttpHelper.sendJsonResponse(exchange, 404, "{\"success\":false,\"message\":\"Endpoint not found\"}");
-        }
-    }
-
-    private void handleUpload(HttpExchange exchange) throws IOException {
-        if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
-            HttpHelper.sendJsonResponse(exchange, 405, "{\"success\":false,\"message\":\"Method not allowed\"}");
-            return;
-        }
-
-        Map<String, String> q = HttpHelper.parseQueryString(exchange.getRequestURI().getQuery());
-        String appId = q.getOrDefault("appId", q.getOrDefault("email", ""));
-        String docType = q.getOrDefault("docType", "");
-        String fileName = q.getOrDefault("fileName", "");
-
-        if (appId.isEmpty() && exchange.getRequestHeaders().containsKey("X-App-Id")) {
-            appId = exchange.getRequestHeaders().getFirst("X-App-Id");
-        }
-        if (docType.isEmpty() && exchange.getRequestHeaders().containsKey("X-Doc-Type")) {
-            docType = exchange.getRequestHeaders().getFirst("X-Doc-Type");
-        }
-        if (fileName.isEmpty() && exchange.getRequestHeaders().containsKey("X-File-Name")) {
-            fileName = exchange.getRequestHeaders().getFirst("X-File-Name");
-        }
-
-        if (appId.isEmpty() || docType.isEmpty() || fileName.isEmpty()) {
-            HttpHelper.sendJsonResponse(exchange, 400, "{\"success\":false,\"message\":\"Missing required parameters: appId, docType, fileName\"}");
-            return;
-        }
-
-        byte[] fileBytes = HttpHelper.readAllBytes(exchange.getRequestBody());
-        if (fileBytes.length == 0) {
-            HttpHelper.sendJsonResponse(exchange, 400, "{\"success\":false,\"message\":\"Uploaded file is empty!\"}");
-            return;
-        }
-
-        if (system.saveUploadedDocument(appId, docType, fileName, fileBytes)) {
-            String json = String.format("{\"success\":true,\"message\":\"Document '%s' uploaded successfully!\",\"docType\":\"%s\",\"fileName\":\"%s\"}",
-                    HttpHelper.escapeJson(Document.getTitleForType(docType)),
-                    HttpHelper.escapeJson(docType), HttpHelper.escapeJson(fileName));
-            HttpHelper.sendJsonResponse(exchange, 200, json);
-        } else {
-            HttpHelper.sendJsonResponse(exchange, 400, "{\"success\":false,\"message\":\"Failed to upload document. Verify application ID and allowed formats (PDF, JPG, PNG under 5MB).\"}");
-        }
-    }
-
-    private void handleViewOrDownload(HttpExchange exchange, boolean isDownload) throws IOException {
-        if (!"GET".equalsIgnoreCase(exchange.getRequestMethod())) {
-            HttpHelper.sendJsonResponse(exchange, 405, "{\"success\":false,\"message\":\"Method not allowed\"}");
-            return;
-        }
-
-        Map<String, String> q = HttpHelper.parseQueryString(exchange.getRequestURI().getQuery());
-        String appId = q.getOrDefault("appId", q.getOrDefault("email", ""));
-        String docType = q.getOrDefault("docType", "");
-
-        File docFile = system.getDocumentFile(appId, docType);
-        if (docFile != null && docFile.exists()) {
-            String name = docFile.getName().toLowerCase();
-            String contentType = "application/octet-stream";
-            if (name.endsWith(".pdf")) contentType = "application/pdf";
-            else if (name.endsWith(".png")) contentType = "image/png";
-            else if (name.endsWith(".jpg") || name.endsWith(".jpeg")) contentType = "image/jpeg";
-
-            exchange.getResponseHeaders().set("Content-Type", contentType);
-            exchange.getResponseHeaders().set("Content-Disposition", (isDownload ? "attachment" : "inline") + "; filename=\"" + docFile.getName() + "\"");
-
-            byte[] fileBytes = new byte[(int) docFile.length()];
-            try (FileInputStream fis = new FileInputStream(docFile)) {
-                fis.read(fileBytes);
-            }
-            exchange.sendResponseHeaders(200, fileBytes.length);
-            try (OutputStream os = exchange.getResponseBody()) {
-                os.write(fileBytes);
-            }
-        } else {
-            String notFound = "<h1>404 Not Found</h1><p>The requested document was not found or has not been uploaded yet.</p>";
-            exchange.getResponseHeaders().set("Content-Type", "text/html; charset=UTF-8");
-            exchange.sendResponseHeaders(404, notFound.length());
-            try (OutputStream os = exchange.getResponseBody()) {
-                os.write(notFound.getBytes(StandardCharsets.UTF_8));
-            }
-        }
-    }
-}
-
-```
-
----
-
-### 13. `Main.java` (71 lines)
-
-> **Purpose**: Server Application Entry Point  
-> **Role**: Configures routes, initializes HTTP server on port 8080, and starts the system.
-
-```java
-import com.sun.net.httpserver.HttpServer;
-import java.io.File;
-import java.net.InetSocketAddress;
-
 public class Main {
 
     private static final int PORT = 8080;
+    private static AdmissionSystem system;
+    private static String frontendDir;
 
     public static void main(String[] args) {
         try {
-            AdmissionSystem system = new AdmissionSystem();
-            String frontendPath = locateFrontendFolder();
+            system = new AdmissionSystem();
+            frontendDir = findFrontend();
 
             HttpServer server = HttpServer.create(new InetSocketAddress(PORT), 0);
-
-            server.createContext("/", new StaticFileHandler(frontendPath));
-
-            StudentApiHandler studentHandler = new StudentApiHandler(system);
-            server.createContext("/api/register", studentHandler);
-            server.createContext("/api/login", studentHandler);
-            server.createContext("/api/apply", studentHandler);
-            server.createContext("/api/status", studentHandler);
-            server.createContext("/api/student/allocation-response", studentHandler);
-
-            AdminApiHandler adminHandler = new AdminApiHandler(system);
-            server.createContext("/api/admin-login", adminHandler);
-            server.createContext("/api/admin/applications", adminHandler);
-            server.createContext("/api/admin/action", adminHandler);
-            server.createContext("/api/admin/verify-documents", adminHandler);
-            server.createContext("/api/admin/allocate-branch", adminHandler);
-
-            DocumentApiHandler docHandler = new DocumentApiHandler(system);
-            server.createContext("/api/upload-document", docHandler);
-            server.createContext("/api/document/view", docHandler);
-            server.createContext("/api/document/download", docHandler);
-
-            server.setExecutor(null);
+            server.createContext("/", Main::handleRequest);
             server.start();
 
-            System.out.println("Web server started at http://localhost:" + PORT + "/");
+            System.out.println("Portal running at http://localhost:" + PORT + "/");
             Thread.currentThread().join();
-
         } catch (Exception e) {
             System.err.println("Server error: " + e.getMessage());
         }
     }
 
-    private static String locateFrontendFolder() {
-        String[] candidates = { "frontend", "CollegeAdmissionPortal/frontend", "../frontend", "../../frontend" };
-        for (String c : candidates) {
-            File dir = new File(c);
-            if (new File(dir, "index.html").exists()) {
-                return dir.getAbsolutePath();
+    private static void handleRequest(HttpExchange exchange) throws IOException {
+        String path = exchange.getRequestURI().getPath();
+        if (path.startsWith("/api/")) {
+            handleApi(exchange, path);
+        } else {
+            serveFile(exchange, path);
+        }
+    }
+
+    private static void serveFile(HttpExchange exchange, String path) throws IOException {
+        if (path == null || path.isEmpty() || path.equals("/")) path = "/index.html";
+        if (path.length() > 1 && path.endsWith("/")) path = path.substring(0, path.length() - 1);
+        if (path.equals("/favicon.ico")) {
+            exchange.sendResponseHeaders(204, -1);
+            exchange.close();
+            return;
+        }
+
+        File file = new File(frontendDir, path.startsWith("/") ? path.substring(1) : path);
+        if (!file.exists() || file.isDirectory()) {
+            File html = new File(frontendDir, (path.startsWith("/") ? path.substring(1) : path) + ".html");
+            if (html.exists() && html.isFile()) file = html;
+        }
+
+        if (file.exists() && file.isFile()) {
+            String name = file.getName().toLowerCase();
+            String type = "text/plain";
+            if (name.endsWith(".html")) type = "text/html; charset=UTF-8";
+            else if (name.endsWith(".css")) type = "text/css; charset=UTF-8";
+            else if (name.endsWith(".js")) type = "application/javascript; charset=UTF-8";
+            else if (name.endsWith(".png")) type = "image/png";
+            else if (name.endsWith(".jpg") || name.endsWith(".jpeg")) type = "image/jpeg";
+            else if (name.endsWith(".pdf")) type = "application/pdf";
+            else if (name.endsWith(".svg")) type = "image/svg+xml";
+
+            byte[] bytes = new byte[(int) file.length()];
+            try (FileInputStream fis = new FileInputStream(file)) { fis.read(bytes); }
+            exchange.getResponseHeaders().set("Content-Type", type);
+            exchange.sendResponseHeaders(200, bytes.length);
+            try (OutputStream os = exchange.getResponseBody()) { os.write(bytes); }
+        } else {
+            byte[] notFound = "<h1>404 Not Found</h1><p>Page does not exist.</p>".getBytes(StandardCharsets.UTF_8);
+            exchange.getResponseHeaders().set("Content-Type", "text/html; charset=UTF-8");
+            exchange.sendResponseHeaders(404, notFound.length);
+            try (OutputStream os = exchange.getResponseBody()) { os.write(notFound); }
+        }
+    }
+
+    private static void handleApi(HttpExchange exchange, String path) throws IOException {
+        if (path.equals("/api/register")) {
+            Map<String, String> p = parseForm(exchange);
+            String name = p.getOrDefault("name", "").trim();
+            String email = p.getOrDefault("email", "").trim();
+            String pass = p.getOrDefault("password", "").trim();
+            String phone = p.getOrDefault("phone", "").trim();
+            if (name.isEmpty() || email.isEmpty() || pass.isEmpty() || phone.isEmpty()) {
+                sendJson(exchange, 400, "{\"success\":false,\"message\":\"All fields are required!\"}");
+            } else if (system.registerStudent(name, email, pass, phone)) {
+                sendJson(exchange, 200, "{\"success\":true,\"message\":\"Registration successful! You can now login.\"}");
+            } else {
+                sendJson(exchange, 400, "{\"success\":false,\"message\":\"This email is already registered! Please login.\"}");
+            }
+        } else if (path.equals("/api/login")) {
+            Map<String, String> p = parseForm(exchange);
+            Student s = system.authenticateStudent(p.get("email"), p.get("password"));
+            if (s != null) {
+                sendJson(exchange, 200, String.format("{\"success\":true,\"id\":\"%s\",\"name\":\"%s\",\"email\":\"%s\",\"phone\":\"%s\",\"message\":\"Login successful!\"}",
+                        escape(s.getId()), escape(s.getName()), escape(s.getEmail()), escape(s.getPhoneNumber())));
+            } else {
+                sendJson(exchange, 401, "{\"success\":false,\"message\":\"Invalid email or password! Please check credentials.\"}");
+            }
+        } else if (path.equals("/api/apply")) {
+            Map<String, String> p = parseForm(exchange);
+            double ssc = parseDouble(p.get("sscMarks")), hsc = parseDouble(p.get("hscMarks")), cet = parseDouble(p.get("cetScore"));
+            List<String> prefs = new ArrayList<>();
+            String rawPrefs = p.getOrDefault("preferences", "");
+            if (!rawPrefs.isEmpty()) {
+                for (String item : rawPrefs.split("[,;]")) {
+                    if (!item.trim().isEmpty() && !prefs.contains(item.trim())) prefs.add(item.trim());
+                }
+            }
+            String course = p.getOrDefault("course", "").trim();
+            if (prefs.isEmpty() && !course.isEmpty()) prefs.add(course);
+            Application app = system.submitApplication(p.getOrDefault("email", ""), p.getOrDefault("name", ""),
+                    ssc, hsc, cet, course, p.getOrDefault("category", "General"), prefs);
+            sendJson(exchange, 200, String.format("{\"success\":true,\"appId\":\"%s\",\"message\":\"Application submitted successfully!\"}", escape(app.getApplicationId())));
+        } else if (path.equals("/api/status")) {
+            Map<String, String> q = parseQuery(exchange.getRequestURI().getQuery());
+            Application app = system.getApplication(q.getOrDefault("appId", q.get("email")));
+            if (app != null) {
+                Student s = system.getStudentByEmail(app.getStudentEmail());
+                sendJson(exchange, 200, formatAppJson(app, s != null ? s.getPhoneNumber() : ""));
+            } else {
+                sendJson(exchange, 200, "{\"found\":false,\"message\":\"No application found for this candidate.\"}");
+            }
+        } else if (path.equals("/api/upload-document")) {
+            handleUpload(exchange);
+        } else if (path.equals("/api/document/view") || path.equals("/api/document/download")) {
+            handleDocumentFile(exchange, path.endsWith("download"));
+        } else if (path.equals("/api/student/allocation-response")) {
+            Map<String, String> p = parseForm(exchange);
+            String appId = p.getOrDefault("appId", ""), decision = p.getOrDefault("action", "");
+            if (appId.isEmpty() || decision.isEmpty()) {
+                sendJson(exchange, 400, "{\"success\":false,\"message\":\"Application ID and action are required!\"}");
+            } else if (system.respondToAllocation(appId, decision, p.get("remarks"))) {
+                String msg = "Accept".equalsIgnoreCase(decision) ? "Congratulations! You have accepted the allocated branch. Your admission is CONFIRMED."
+                        : "Allocation rejected. Your application has been returned to the Admission Committee for review and reallocation.";
+                sendJson(exchange, 200, "{\"success\":true,\"message\":\"" + msg + "\"}");
+            } else {
+                sendJson(exchange, 400, "{\"success\":false,\"message\":\"Failed to process allocation decision. Application not found.\"}");
+            }
+        } else if (path.equals("/api/admin-login")) {
+            Map<String, String> p = parseForm(exchange);
+            Admin a = system.authenticateAdmin(p.get("email"), p.get("password"));
+            if (a != null) {
+                sendJson(exchange, 200, String.format("{\"success\":true,\"id\":\"%s\",\"name\":\"%s\",\"email\":\"%s\",\"role\":\"%s\",\"message\":\"Admin authentication successful!\"}",
+                        escape(a.getId()), escape(a.getName()), escape(a.getEmail()), escape(a.getRoleDescription())));
+            } else {
+                sendJson(exchange, 401, "{\"success\":false,\"message\":\"Invalid Admin credentials! Access Denied.\"}");
+            }
+        } else if (path.equals("/api/admin/applications")) {
+            List<Application> apps = system.getAllApplications();
+            StringBuilder sb = new StringBuilder("[");
+            for (int i = 0; i < apps.size(); i++) {
+                Application a = apps.get(i);
+                Student s = system.getStudentByEmail(a.getStudentEmail());
+                sb.append(formatAppJson(a, s != null ? s.getPhoneNumber() : ""));
+                if (i < apps.size() - 1) sb.append(",");
+            }
+            sb.append("]");
+            sendJson(exchange, 200, sb.toString());
+        } else if (path.equals("/api/admin/verify-documents")) {
+            Map<String, String> p = parseForm(exchange);
+            String status = p.getOrDefault("status", "Documents Verified");
+            if (system.verifyApplicationDocuments(p.get("appId"), status, p.get("remarks"))) {
+                sendJson(exchange, 200, "{\"success\":true,\"message\":\"Document verification updated to " + escape(status) + "!\"}");
+            } else {
+                sendJson(exchange, 404, "{\"success\":false,\"message\":\"Application ID not found.\"}");
+            }
+        } else if (path.equals("/api/admin/allocate-branch")) {
+            Map<String, String> p = parseForm(exchange);
+            String appId = p.getOrDefault("appId", ""), branch = p.getOrDefault("branch", "");
+            if (appId.isEmpty() || branch.isEmpty()) {
+                sendJson(exchange, 400, "{\"success\":false,\"message\":\"Application ID and branch must be provided!\"}");
+            } else if (system.allocateBranch(appId, branch, p.get("remarks"))) {
+                sendJson(exchange, 200, "{\"success\":true,\"message\":\"Branch '" + escape(branch) + "' allocated successfully! Decision sent to candidate.\"}");
+            } else {
+                sendJson(exchange, 404, "{\"success\":false,\"message\":\"Application ID not found.\"}");
+            }
+        } else if (path.equals("/api/admin/action")) {
+            Map<String, String> p = parseForm(exchange);
+            String action = p.getOrDefault("action", "");
+            if (system.updateApplicationStatus(p.get("appId"), action, p.get("remarks"))) {
+                sendJson(exchange, 200, "{\"success\":true,\"message\":\"Application status updated to " + escape(action) + "!\"}");
+            } else {
+                sendJson(exchange, 404, "{\"success\":false,\"message\":\"Application ID not found.\"}");
+            }
+        } else {
+            sendJson(exchange, 404, "{\"success\":false,\"message\":\"API endpoint not found.\"}");
+        }
+    }
+
+    private static void handleUpload(HttpExchange exchange) throws IOException {
+        Map<String, String> q = parseQuery(exchange.getRequestURI().getQuery());
+        String appId = q.getOrDefault("appId", q.getOrDefault("email", ""));
+        String docType = q.getOrDefault("docType", "");
+        String fileName = q.getOrDefault("fileName", "");
+        if (appId.isEmpty() && exchange.getRequestHeaders().containsKey("X-App-Id")) appId = exchange.getRequestHeaders().getFirst("X-App-Id");
+        if (docType.isEmpty() && exchange.getRequestHeaders().containsKey("X-Doc-Type")) docType = exchange.getRequestHeaders().getFirst("X-Doc-Type");
+        if (fileName.isEmpty() && exchange.getRequestHeaders().containsKey("X-File-Name")) fileName = exchange.getRequestHeaders().getFirst("X-File-Name");
+
+        byte[] bytes = readBytes(exchange.getRequestBody());
+        if (appId.isEmpty() || docType.isEmpty() || fileName.isEmpty() || bytes.length == 0) {
+            sendJson(exchange, 400, "{\"success\":false,\"message\":\"Invalid upload request or empty file.\"}");
+            return;
+        }
+        if (system.saveUploadedDocument(appId, docType, fileName, bytes)) {
+            sendJson(exchange, 200, String.format("{\"success\":true,\"message\":\"Document '%s' uploaded successfully!\",\"docType\":\"%s\",\"fileName\":\"%s\"}",
+                    escape(Document.getTitleForType(docType)), escape(docType), escape(fileName)));
+        } else {
+            sendJson(exchange, 400, "{\"success\":false,\"message\":\"Failed to upload document. Verify application ID and allowed formats (PDF, JPG, PNG under 5MB).\"}");
+        }
+    }
+
+    private static void handleDocumentFile(HttpExchange exchange, boolean download) throws IOException {
+        Map<String, String> q = parseQuery(exchange.getRequestURI().getQuery());
+        File file = system.getDocumentFile(q.getOrDefault("appId", q.get("email")), q.get("docType"));
+        if (file != null && file.exists()) {
+            String name = file.getName().toLowerCase();
+            String type = name.endsWith(".pdf") ? "application/pdf" : (name.endsWith(".png") ? "image/png" : "image/jpeg");
+            exchange.getResponseHeaders().set("Content-Type", type);
+            exchange.getResponseHeaders().set("Content-Disposition", (download ? "attachment" : "inline") + "; filename=\"" + file.getName() + "\"");
+            byte[] bytes = new byte[(int) file.length()];
+            try (FileInputStream fis = new FileInputStream(file)) { fis.read(bytes); }
+            exchange.sendResponseHeaders(200, bytes.length);
+            try (OutputStream os = exchange.getResponseBody()) { os.write(bytes); }
+        } else {
+            byte[] err = "<h1>404 Not Found</h1><p>The requested document was not found or has not been uploaded yet.</p>".getBytes(StandardCharsets.UTF_8);
+            exchange.getResponseHeaders().set("Content-Type", "text/html; charset=UTF-8");
+            exchange.sendResponseHeaders(404, err.length);
+            try (OutputStream os = exchange.getResponseBody()) { os.write(err); }
+        }
+    }
+
+    private static void sendJson(HttpExchange exchange, int code, String json) throws IOException {
+        byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
+        exchange.getResponseHeaders().set("Content-Type", "application/json; charset=UTF-8");
+        exchange.sendResponseHeaders(code, bytes.length);
+        try (OutputStream os = exchange.getResponseBody()) { os.write(bytes); }
+    }
+
+    private static Map<String, String> parseForm(HttpExchange exchange) throws IOException {
+        Map<String, String> map = new HashMap<>();
+        try (BufferedReader r = new BufferedReader(new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8))) {
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = r.readLine()) != null) sb.append(line);
+            for (String pair : sb.toString().split("&")) {
+                String[] kv = pair.split("=");
+                if (kv.length >= 2) map.put(URLDecoder.decode(kv[0], "UTF-8"), URLDecoder.decode(kv[1], "UTF-8"));
+                else if (kv.length == 1 && !kv[0].isEmpty()) map.put(URLDecoder.decode(kv[0], "UTF-8"), "");
             }
         }
-        try {
-            File codeLoc = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-            File parent = codeLoc.isDirectory() ? codeLoc : codeLoc.getParentFile();
-            File f1 = new File(parent, "frontend");
-            if (new File(f1, "index.html").exists()) return f1.getAbsolutePath();
-            if (parent.getParentFile() != null) {
-                File f2 = new File(parent.getParentFile(), "frontend");
-                if (new File(f2, "index.html").exists()) return f2.getAbsolutePath();
-                File f3 = new File(parent.getParentFile(), "CollegeAdmissionPortal/frontend");
-                if (new File(f3, "index.html").exists()) return f3.getAbsolutePath();
-            }
-        } catch (Exception ignored) {
+        return map;
+    }
+
+    private static Map<String, String> parseQuery(String query) {
+        Map<String, String> map = new HashMap<>();
+        if (query == null) return map;
+        for (String pair : query.split("&")) {
+            String[] kv = pair.split("=");
+            try {
+                if (kv.length >= 2) map.put(URLDecoder.decode(kv[0], "UTF-8"), URLDecoder.decode(kv[1], "UTF-8"));
+                else if (kv.length == 1 && !kv[0].isEmpty()) map.put(URLDecoder.decode(kv[0], "UTF-8"), "");
+            } catch (Exception ignored) {}
+        }
+        return map;
+    }
+
+    private static byte[] readBytes(InputStream is) throws IOException {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        byte[] buf = new byte[8192];
+        int n;
+        while ((n = is.read(buf)) != -1) bos.write(buf, 0, n);
+        return bos.toByteArray();
+    }
+
+    private static double parseDouble(String str) {
+        try { return str != null ? Double.parseDouble(str.trim()) : 0.0; } catch (Exception e) { return 0.0; }
+    }
+
+    private static String escape(String s) {
+        if (s == null) return "";
+        return s.replace("\\", "\\\\").replace("\"", "\\\"").replace("\b", "\\b").replace("\f", "\\f").replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t");
+    }
+
+    private static String formatAppJson(Application app, String phone) {
+        StringBuilder prefs = new StringBuilder("[");
+        for (int i = 0; i < app.getBranchPreferences().size(); i++) {
+            prefs.append("\"").append(escape(app.getBranchPreferences().get(i))).append("\"");
+            if (i < app.getBranchPreferences().size() - 1) prefs.append(",");
+        }
+        prefs.append("]");
+
+        StringBuilder docs = new StringBuilder("{");
+        int i = 0;
+        for (Map.Entry<String, String> e : app.getUploadedDocuments().entrySet()) {
+            if (i > 0) docs.append(",");
+            docs.append("\"").append(escape(e.getKey())).append("\":\"").append(escape(e.getValue())).append("\"");
+            i++;
+        }
+        docs.append("}");
+
+        return String.format("{\"found\":true,\"appId\":\"%s\",\"name\":\"%s\",\"email\":\"%s\",\"phone\":\"%s\"," +
+                "\"ssc\":%.2f,\"hsc\":%.2f,\"cet\":%.2f,\"course\":\"%s\",\"category\":\"%s\",\"status\":\"%s\",\"remarks\":\"%s\"," +
+                "\"preferences\":%s,\"allocatedBranch\":\"%s\",\"allocationStatus\":\"%s\",\"verificationStatus\":\"%s\"," +
+                "\"documents\":%s,\"allocationRemarks\":\"%s\"}",
+                escape(app.getApplicationId()), escape(app.getStudentName()), escape(app.getStudentEmail()), escape(phone),
+                app.getSscMarks(), app.getHscMarks(), app.getCetScore(), escape(app.getCourseChoice()),
+                escape(app.getCategory()), escape(app.getStatus()), escape(app.getRemarks()),
+                prefs, escape(app.getAllocatedBranch()), escape(app.getAllocationStatus()),
+                escape(app.getVerificationStatus()), docs, escape(app.getAllocationRemarks()));
+    }
+
+    private static String findFrontend() {
+        String[] dirs = { "frontend", "CollegeAdmissionPortal/frontend", "../frontend", "../../frontend" };
+        for (String d : dirs) {
+            if (new File(d, "index.html").exists()) return new File(d).getAbsolutePath();
         }
         return "frontend";
     }
