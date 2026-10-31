@@ -8,9 +8,6 @@
 </head>
 <body>
 
-    <!-- ============================================================= -->
-    <!-- HEADER SECTION                                                -->
-    <!-- ============================================================= -->
     <header>
         <div class="header-container">
             <div class="portal-title">
@@ -27,17 +24,12 @@
         </div>
     </header>
 
-    <!-- Notice Bar -->
     <div class="notice-bar">
         Admission decisions and seat allocations are released here. Candidates must explicitly Accept allocated seats to confirm admission.
     </div>
 
-    <!-- ============================================================= -->
-    <!-- MAIN CONTENT SECTION                                          -->
-    <!-- ============================================================= -->
     <main>
 
-        <!-- Search / Lookup Card -->
         <section class="card" style="max-width: 800px; margin: 0 auto 25px auto;">
             <div class="card-header">
                 <h2>Track Application Status & Seat Allotment</h2>
@@ -50,15 +42,10 @@
             </form>
         </section>
 
-        <!-- Action Response Alert Box -->
         <div id="statusActionAlert" class="alert alert-success" style="max-width: 800px; margin: 0 auto 20px auto;"></div>
 
-        <!-- --------------------------------------------------------- -->
-        <!-- DYNAMIC STATUS CONTAINER (Populated when application found) -->
-        <!-- --------------------------------------------------------- -->
         <div id="statusResultContainer" style="display: none; max-width: 800px; margin: 0 auto;">
 
-            <!-- BANNER 1: PROVISIONAL ALLOCATION - AWAITING STUDENT ACCEPTANCE -->
             <section id="allocationDecisionBanner" class="allocation-banner" style="display: none;">
                 <div style="font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #f4a261; font-weight: 700;">
                     &#127891; PROVISIONAL SEAT ALLOCATION DECISION
@@ -88,7 +75,6 @@
                 </div>
             </section>
 
-            <!-- BANNER 2: ADMISSION OFFICIALLY CONFIRMED -->
             <section id="admissionConfirmedBanner" class="admission-confirmed-card" style="display: none;">
                 <div class="admission-confirmed-seal">&#127891; &#10004;</div>
                 <div class="admission-confirmed-title">ADMISSION CONFIRMED</div>
@@ -101,7 +87,6 @@
                 <button onclick="window.print()" class="btn btn-primary btn-sm">&#128424; Print Provisional Admission Slip</button>
             </section>
 
-            <!-- BANNER 3: ALLOCATION REJECTED BY CANDIDATE -->
             <section id="allocationRejectedBanner" class="card" style="display: none; border-left: 4px solid #e63946; background-color: #fff5f5;">
                 <h3 style="color: #e63946; margin-bottom: 6px;">Allocation Rejected by Candidate</h3>
                 <p style="font-size: 14px; color: #475569;">
@@ -109,7 +94,6 @@
                 </p>
             </section>
 
-            <!-- Main Application Details Card -->
             <section class="card">
                 <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                     <div>
@@ -119,7 +103,6 @@
                     <div id="statusBadgeContainer"></div>
                 </div>
 
-                <!-- Personal & Academic Details Grid -->
                 <div class="detail-grid">
                     <div class="detail-item">
                         <div class="detail-label">Candidate Name</div>
@@ -157,7 +140,6 @@
                     </div>
                 </div>
 
-                <!-- Uploaded Documents Section -->
                 <div class="form-section-title" style="margin-top: 25px;">
                     Uploaded Credential Documents & Verification
                 </div>
@@ -176,20 +158,18 @@
                             </tr>
                         </thead>
                         <tbody id="dispDocTableBody">
-                            <!-- Populated dynamically -->
+
                         </tbody>
                     </table>
                 </div>
 
-                <!-- Branch Preferences in Priority Order -->
                 <div class="form-section-title">
                     Submitted Branch Preferences (Priority Order)
                 </div>
                 <ol id="dispPrefList" style="padding-left: 20px; line-height: 1.8; color: #1e293b; font-size: 14px; margin-bottom: 25px;">
-                    <!-- Populated dynamically -->
+
                 </ol>
 
-                <!-- Committee Remarks -->
                 <div class="detail-item" style="background-color: #ffffff; border-left: 4px solid #0d3b66;">
                     <div class="detail-label">Admission Committee Remarks</div>
                     <div id="dispRemarks" style="font-size: 15px; color: #334155; margin-top: 4px;">-</div>
@@ -199,7 +179,6 @@
 
         </div>
 
-        <!-- Not Found Notice Card -->
         <section id="notFoundCard" class="card" style="display: none; max-width: 800px; margin: 0 auto; text-align: center;">
             <h3 style="color: #e63946; margin-bottom: 10px;">No Application Found</h3>
             <p style="color: #64748b; margin-bottom: 20px;">
@@ -210,9 +189,6 @@
 
     </main>
 
-    <!-- ============================================================= -->
-    <!-- MODAL: DOCUMENT PREVIEW MODAL                                 -->
-    <!-- ============================================================= -->
     <div id="previewModal" class="modal-backdrop">
         <div class="modal-dialog" style="max-width: 900px;">
             <div class="modal-header">
@@ -232,14 +208,10 @@
         </div>
     </div>
 
-    <!-- Footer -->
     <footer>
         <p>&copy; 2026 State Common Entrance Test Cell • College Admission Portal</p>
     </footer>
 
-    <!-- ============================================================= -->
-    <!-- JAVASCRIPT: Status Queries & Branch Acceptance Actions        -->
-    <!-- ============================================================= -->
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const paramEmail = urlParams.get('email') || sessionStorage.getItem('studentEmail');
@@ -294,13 +266,11 @@
             document.getElementById('dispCet').textContent = data.cet.toFixed(2) + ' Percentile';
             document.getElementById('dispRemarks').textContent = data.remarks || 'No remarks provided.';
 
-            // Document status badge
             const docBadge = document.getElementById('dispDocStatusBadge');
             const vStatus = data.verificationStatus || 'Pending Verification';
             docBadge.textContent = vStatus;
             docBadge.className = 'badge ' + (vStatus === 'Documents Verified' ? 'badge-verified' : (vStatus === 'Verification Rejected' ? 'badge-rejected' : 'badge-pending'));
 
-            // Render Document List Table
             const docTableBody = document.getElementById('dispDocTableBody');
             docTableBody.innerHTML = '';
             const docTitles = {
@@ -338,7 +308,6 @@
                 docTableBody.appendChild(tr);
             });
 
-            // Render Preferences List
             const prefList = document.getElementById('dispPrefList');
             prefList.innerHTML = '';
             const prefs = data.preferences || (data.course ? [data.course] : []);
@@ -348,7 +317,6 @@
                 prefList.appendChild(li);
             });
 
-            // Render Branch Allocation Banners based on Allocation Status
             const allocBanner = document.getElementById('allocationDecisionBanner');
             const confirmedBanner = document.getElementById('admissionConfirmedBanner');
             const rejectedBanner = document.getElementById('allocationRejectedBanner');
@@ -363,12 +331,12 @@
             let overallBadgeHtml = '';
 
             if (allocStatus === 'accepted' || statusLower === 'admission confirmed' || statusLower === 'approved') {
-                // Confirmed
+
                 document.getElementById('confirmedBranchDisplay').textContent = data.allocatedBranch || data.course;
                 confirmedBanner.style.display = 'block';
                 overallBadgeHtml = '<span class="badge badge-confirmed">&#10004; ADMISSION CONFIRMED</span>';
             } else if (allocStatus === 'awaiting student acceptance' || statusLower === 'branch allocated') {
-                // Awaiting acceptance
+
                 document.getElementById('allocBranchDisplay').textContent = data.allocatedBranch || data.course;
                 document.getElementById('allocRemarksText').textContent = data.allocationRemarks || data.remarks || 'Seat allotted in CAP Round 1.';
                 allocBanner.style.display = 'block';
@@ -386,7 +354,6 @@
             resultContainer.style.display = 'block';
         }
 
-        // Student responds to branch allocation: Accept or Reject
         function respondToAllocation(decision) {
             if (!currentAppData) return;
 
@@ -429,7 +396,6 @@
             });
         }
 
-        // Preview Document Modal
         function previewDocument(appId, docType, docTitle) {
             document.getElementById('previewDocTitle').textContent = `Document Preview: ${docTitle}`;
             const container = document.getElementById('previewContainer');

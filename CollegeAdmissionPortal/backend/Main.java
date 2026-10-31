@@ -18,22 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * ============================================================================
- * Class Name: Main
- * OOP & System Architecture Role:
- *   1. Driver / Entry Point: Contains main(String[] args) method to launch program.
- *   2. Web Server: Uses Core Java's built-in HttpServer (com.sun.net.httpserver).
- *      No external framework (no Spring Boot, Tomcat, or Node.js) required.
- *   3. Controller: Routes incoming web requests to AdmissionSystem and returns responses.
- * ============================================================================
- * What this class does:
- *   - Starts a local web server at port 8080 (http://localhost:8080/).
- *   - Serves HTML and CSS files from the frontend/ directory to the user's browser.
- *   - Handles Student Registration, Login, Application Submission, Document Uploads,
- *     Document View/Download, Admin Verification, Branch Allocation, and Student Acceptance.
- * ============================================================================
- */
 public class Main {
 
     private static final int PORT = 8080;
@@ -42,19 +26,12 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            System.out.println("=================================================");
-            System.out.println("   COLLEGE ADMISSION PORTAL (OOPS PROJECT)       ");
-            System.out.println("=================================================");
-
             admissionSystem = new AdmissionSystem();
             locateFrontendFolder();
 
             HttpServer server = HttpServer.create(new InetSocketAddress(PORT), 0);
 
-            // Static frontend routes (HTML, CSS, JS)
             server.createContext("/", new StaticFileHandler());
-
-            // Student API Endpoints
             server.createContext("/api/register", new RegisterHandler());
             server.createContext("/api/login", new LoginHandler());
             server.createContext("/api/apply", new ApplyHandler());
@@ -63,8 +40,6 @@ public class Main {
             server.createContext("/api/document/view", new DocumentViewHandler(false));
             server.createContext("/api/document/download", new DocumentViewHandler(true));
             server.createContext("/api/student/allocation-response", new StudentAllocationResponseHandler());
-
-            // Admin API Endpoints
             server.createContext("/api/admin-login", new AdminLoginHandler());
             server.createContext("/api/admin/applications", new AdminApplicationsHandler());
             server.createContext("/api/admin/action", new AdminActionHandler());
@@ -74,55 +49,118 @@ public class Main {
             server.setExecutor(null);
             server.start();
 
-            System.out.println("\n[SERVER STARTED] Web server is running!");
-            System.out.println(">>> Open your browser and go to: http://localhost:" + PORT + "/");
-            System.out.println(">>> Press Ctrl+C in terminal to stop the server.\n");
+            System.out.println("Web server started at http://localhost:" + PORT + "/");
 
-            // Keep main thread alive
             Thread.currentThread().join();
 
         } catch (Exception e) {
-            System.err.println("[SERVER ERROR] Failed to start HTTP server: " + e.getMessage());
+            System.err.println("Server error: " + e.getMessage());
         }
     }
 
     private static void locateFrontendFolder() {
-        File dir = new File("frontend");
-        if (dir.exists() && dir.isDirectory()) {
-            frontendPath = "frontend";
-        } else {
-            frontendPath = "../frontend";
+        String[] candidates = {
+            "frontend",
+            "CollegeAdmissionPortal/frontend",
+            "../frontend",
+            "../../frontend"
+        };
+
+        for (String candidate : candidates) {
+            File dir = new File(candidate);
+            if (new File(dir, "index.html").exists()) {
+                frontendPath = dir.getAbsolutePath();
+                return;
+            }
         }
-        System.out.println("[Main] Serving frontend files from: " + new File(frontendPath).getAbsolutePath());
+
+        try {
+            File codeLoc = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+            File parent = codeLoc.isDirectory() ? codeLoc : codeLoc.getParentFile();
+            File f1 = new File(parent, "frontend");
+            if (new File(f1, "index.html").exists()) {
+                frontendPath = f1.getAbsolutePath();
+                return;
+            }
+            if (parent.getParentFile() != null) {
+                File f2 = new File(parent.getParentFile(), "frontend");
+                if (new File(f2, "index.html").exists()) {
+                    frontendPath = f2.getAbsolutePath();
+                    return;
+                }
+                File f3 = new File(parent.getParentFile(), "CollegeAdmissionPortal/frontend");
+                if (new File(f3, "index.html").exists()) {
+                    frontendPath = f3.getAbsolutePath();
+                    return;
+                }
+            }
+        } catch (Exception ignored) {
+        }
+
+        frontendPath = "frontend";
     }
 
-    // =============================================================
-    // HTTP HANDLER: Serves HTML, CSS, JS files
-    // =============================================================
     static class StaticFileHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             String requestPath = exchange.getRequestURI().getPath();
-            if (requestPath.equals("/")) {
+            if (requestPath == null || requestPath.isEmpty() || requestPath.equals("/")) {
                 requestPath = "/index.html";
             }
 
-            File file = new File(frontendPath + requestPath);
+            if (requestPath.length() > 1 && requestPath.endsWith("/")) {
+                requestPath = requestPath.substring(0, requestPath.length() - 1);
+            }
 
-            if (file.exists() && !file.isDirectory()) {
+            File baseDir = new File(frontendPath);
+            String relativePath = requestPath.startsWith("/") ? requestPath.substring(1) : requestPath;
+
+            if (relativePath.equalsIgnoreCase("favicon.ico")) {
+                File fav = new File(baseDir, relativePath);
+                if (!fav.exists()) {
+                    exchange.sendResponseHeaders(204, -1);
+                    exchange.close();
+                    return;
+                }
+            }
+
+            File file = new File(baseDir, relativePath);
+
+            if (!file.exists() || file.isDirectory()) {
+                File htmlFile = new File(baseDir, relativePath + ".html");
+                if (htmlFile.exists() && htmlFile.isFile()) {
+                    file = htmlFile;
+                }
+            }
+
+            if (file.exists() && file.isDirectory()) {
+                File indexFile = new File(file, "index.html");
+                if (indexFile.exists() && indexFile.isFile()) {
+                    file = indexFile;
+                }
+            }
+
+            if (file.exists() && file.isFile()) {
+                String fileName = file.getName().toLowerCase();
                 String contentType = "text/plain";
-                if (requestPath.endsWith(".html")) {
+                if (fileName.endsWith(".html")) {
                     contentType = "text/html; charset=UTF-8";
-                } else if (requestPath.endsWith(".css")) {
+                } else if (fileName.endsWith(".css")) {
                     contentType = "text/css; charset=UTF-8";
-                } else if (requestPath.endsWith(".js")) {
+                } else if (fileName.endsWith(".js")) {
                     contentType = "application/javascript; charset=UTF-8";
-                } else if (requestPath.endsWith(".png")) {
+                } else if (fileName.endsWith(".png")) {
                     contentType = "image/png";
-                } else if (requestPath.endsWith(".jpg") || requestPath.endsWith(".jpeg")) {
+                } else if (fileName.endsWith(".jpg") || fileName.endsWith(".jpeg")) {
                     contentType = "image/jpeg";
-                } else if (requestPath.endsWith(".pdf")) {
+                } else if (fileName.endsWith(".pdf")) {
                     contentType = "application/pdf";
+                } else if (fileName.endsWith(".svg")) {
+                    contentType = "image/svg+xml";
+                } else if (fileName.endsWith(".ico")) {
+                    contentType = "image/x-icon";
+                } else if (fileName.endsWith(".json")) {
+                    contentType = "application/json; charset=UTF-8";
                 }
 
                 byte[] fileBytes = new byte[(int) file.length()];
@@ -141,15 +179,12 @@ public class Main {
                 exchange.getResponseHeaders().set("Content-Type", "text/html; charset=UTF-8");
                 exchange.sendResponseHeaders(404, notFound.length());
                 try (OutputStream os = exchange.getResponseBody()) {
-                    os.write(notFound.getBytes());
+                    os.write(notFound.getBytes(StandardCharsets.UTF_8));
                 }
             }
         }
     }
 
-    // =============================================================
-    // HTTP HANDLER: Student Registration (/api/register)
-    // =============================================================
     static class RegisterHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
@@ -178,9 +213,6 @@ public class Main {
         }
     }
 
-    // =============================================================
-    // HTTP HANDLER: Student Login (/api/login)
-    // =============================================================
     static class LoginHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
@@ -209,10 +241,6 @@ public class Main {
         }
     }
 
-    // =============================================================
-    // HTTP HANDLER: Admission Form Submission (/api/apply)
-    // Supports branch preferences in priority order!
-    // =============================================================
     static class ApplyHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
@@ -267,9 +295,6 @@ public class Main {
         }
     }
 
-    // =============================================================
-    // HTTP HANDLER: Document Upload (/api/upload-document)
-    // =============================================================
     static class UploadDocumentHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
@@ -283,7 +308,6 @@ public class Main {
                 String docType = queryParams.getOrDefault("docType", "");
                 String fileName = queryParams.getOrDefault("fileName", "");
 
-                // Check headers if not in query params
                 if (appId.isEmpty() && exchange.getRequestHeaders().containsKey("X-App-Id")) {
                     appId = exchange.getRequestHeaders().getFirst("X-App-Id");
                 }
@@ -323,10 +347,6 @@ public class Main {
         }
     }
 
-    // =============================================================
-    // HTTP HANDLER: Document Preview & Download
-    // (/api/document/view & /api/document/download)
-    // =============================================================
     static class DocumentViewHandler implements HttpHandler {
         private final boolean isDownload;
 
@@ -374,7 +394,7 @@ public class Main {
                     exchange.getResponseHeaders().set("Content-Type", "text/html; charset=UTF-8");
                     exchange.sendResponseHeaders(404, notFound.length());
                     try (OutputStream os = exchange.getResponseBody()) {
-                        os.write(notFound.getBytes());
+                        os.write(notFound.getBytes(StandardCharsets.UTF_8));
                     }
                 }
             } else {
@@ -383,9 +403,6 @@ public class Main {
         }
     }
 
-    // =============================================================
-    // HTTP HANDLER: Student Application Status (/api/status)
-    // =============================================================
     static class StatusHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
@@ -417,10 +434,6 @@ public class Main {
         }
     }
 
-    // =============================================================
-    // HTTP HANDLER: Student Allocation Response (/api/student/allocation-response)
-    // Student accepts or rejects the allocated branch.
-    // =============================================================
     static class StudentAllocationResponseHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
@@ -428,7 +441,7 @@ public class Main {
                 Map<String, String> params = parseRequestBody(exchange);
 
                 String appId = params.getOrDefault("appId", "");
-                String decision = params.getOrDefault("action", ""); // "Accept" or "Reject"
+                String decision = params.getOrDefault("action", "");
                 String remarks = params.getOrDefault("remarks", "");
 
                 if (appId.isEmpty() || decision.isEmpty()) {
@@ -452,9 +465,6 @@ public class Main {
         }
     }
 
-    // =============================================================
-    // HTTP HANDLER: Admin Login (/api/admin-login)
-    // =============================================================
     static class AdminLoginHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
@@ -483,9 +493,6 @@ public class Main {
         }
     }
 
-    // =============================================================
-    // HTTP HANDLER: Admin Get All Applications (/api/admin/applications)
-    // =============================================================
     static class AdminApplicationsHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
@@ -513,9 +520,6 @@ public class Main {
         }
     }
 
-    // =============================================================
-    // HTTP HANDLER: Admin Action - Approve / Reject (/api/admin/action)
-    // =============================================================
     static class AdminActionHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
@@ -538,9 +542,6 @@ public class Main {
         }
     }
 
-    // =============================================================
-    // HTTP HANDLER: Admin Document Verification (/api/admin/verify-documents)
-    // =============================================================
     static class AdminVerifyDocumentsHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
@@ -563,9 +564,6 @@ public class Main {
         }
     }
 
-    // =============================================================
-    // HTTP HANDLER: Admin Branch Allocation (/api/admin/allocate-branch)
-    // =============================================================
     static class AdminAllocateBranchHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
@@ -593,9 +591,6 @@ public class Main {
         }
     }
 
-    // =============================================================
-    // HELPER: Format Application Object as JSON String
-    // =============================================================
     private static String formatApplicationJson(Application app, String phone) {
         StringBuilder prefsJson = new StringBuilder();
         prefsJson.append("[");
@@ -643,10 +638,6 @@ public class Main {
             escapeJson(app.getAllocationRemarks())
         );
     }
-
-    // =============================================================
-    // UTILITY METHODS FOR HTTP PARSING AND RESPONSES
-    // =============================================================
 
     private static Map<String, String> parseRequestBody(HttpExchange exchange) throws IOException {
         Map<String, String> params = new HashMap<>();

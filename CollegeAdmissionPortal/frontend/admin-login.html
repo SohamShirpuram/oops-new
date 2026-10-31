@@ -1,28 +1,25 @@
 <!DOCTYPE html>
-<!-- Declare standard HTML5 document type -->
+
 <html lang="en">
 <head>
-    <!-- Character set -->
+
     <meta charset="UTF-8">
-    <!-- Mobile responsiveness -->
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Title -->
+
     <title>Admin Portal Login - CET Admission Cell</title>
-    <!-- Link CSS -->
+
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- ============================================================= -->
-    <!-- HEADER SECTION                                                -->
-    <!-- ============================================================= -->
     <header>
         <div class="header-container">
             <div class="portal-title">
                 <h1>State CET Cell - Admission Portal</h1>
                 <p>Admission Authority & Scrutiny Committee Portal</p>
             </div>
-            <!-- Navigation links -->
+
             <nav>
                 <a href="index.html">Home</a>
                 <a href="login.html">Student Login</a>
@@ -31,50 +28,38 @@
         </div>
     </header>
 
-    <!-- Notice Bar -->
     <div class="notice-bar">
         Authorized Access Only: For College Admission Officers and Verification Scrutiny Committee.
     </div>
 
-    <!-- ============================================================= -->
-    <!-- MAIN CONTENT SECTION (ADMIN LOGIN FORM)                       -->
-    <!-- ============================================================= -->
     <main>
         <div class="card" style="max-width: 480px; margin: 0 auto; border-top: 4px solid #e76f51;">
 
-            <!-- Card Header -->
             <div class="card-header">
                 <h2>Admin Officer Login</h2>
                 <p>Sign in to review candidate applications and manage approvals.</p>
             </div>
 
-            <!-- Success Alert -->
             <div id="successAlert" class="alert alert-success"></div>
 
-            <!-- Error Alert -->
             <div id="errorAlert" class="alert alert-error"></div>
 
-            <!-- Admin Login Form -->
             <form id="adminLoginForm">
 
-                <!-- Admin Email -->
                 <div class="form-group">
                     <label for="adminEmail">Official Admin Email <span class="required-star">*</span></label>
                     <input type="email" id="adminEmail" name="email" class="form-control" placeholder="admin@cet.gov.in" required>
                 </div>
 
-                <!-- Admin Password -->
                 <div class="form-group">
                     <label for="adminPassword">Admin Password <span class="required-star">*</span></label>
                     <input type="password" id="adminPassword" name="password" class="form-control" placeholder="Enter admin password" required>
                 </div>
 
-                <!-- Submit Button -->
                 <button type="submit" class="btn btn-danger btn-block" style="background-color: #0d3b66;">
                     Login as Administrator
                 </button>
 
-                <!-- Default Credentials Reminder Box -->
                 <div style="margin-top: 25px; padding: 12px; background-color: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 5px; font-size: 13px; color: #475569;">
                     <strong>Pre-configured Admin Credentials:</strong><br>
                     Email: <code>admin@cet.gov.in</code><br>
@@ -87,16 +72,10 @@
         </div>
     </main>
 
-    <!-- ============================================================= -->
-    <!-- FOOTER SECTION                                                -->
-    <!-- ============================================================= -->
     <footer>
         <p>&copy; 2026 State Common Entrance Test Cell • College Admission Portal</p>
     </footer>
 
-    <!-- ============================================================= -->
-    <!-- JAVASCRIPT: Handles Admin Authentication                       -->
-    <!-- ============================================================= -->
     <script>
         const adminLoginForm = document.getElementById('adminLoginForm');
         const successAlert = document.getElementById('successAlert');
@@ -115,7 +94,6 @@
             formData.append('email', email);
             formData.append('password', password);
 
-            // Send request to Java backend /api/admin-login
             fetch('/api/admin-login', {
                 method: 'POST',
                 headers: {
@@ -126,7 +104,7 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Store admin session
+
                     sessionStorage.setItem('adminEmail', data.email);
                     sessionStorage.setItem('adminName', data.name);
                     sessionStorage.setItem('adminRole', data.role);
@@ -151,4 +129,3 @@
 
 </body>
 </html>
-

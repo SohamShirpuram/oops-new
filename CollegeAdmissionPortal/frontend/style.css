@@ -1,772 +1,570 @@
-/* ==========================================================================
-   COLLEGE ADMISSION PORTAL - STYLESHEET
-   Style Theme: Professional Government / CET Admission Portal
-   Colours:
-     - Header Navy: #0d3b66
-     - Accent Gold: #f4a261
-     - Background:  #f4f6f9
-     - Dark Slate:  #2b2d42
-     - Success:     #2a9d8f
-     - Danger:      #e76f51
-   ========================================================================== */
-
-/* --------------------------------------------------------------------------
-   Global Reset and Body Settings
-   -------------------------------------------------------------------------- */
-
-/* Reset default margin and padding for all elements */
 * {
-    /* Include padding and border in the element's total width and height */
     box-sizing: border-box;
-    /* Remove default margin */
     margin: 0;
-    /* Remove default padding */
     padding: 0;
 }
 
-/* Base styling for the entire web page */
 body {
-    /* Set a clean, modern, readable font family */
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    /* Set a soft light grey background colour */
     background-color: #f4f6f9;
-    /* Set default text colour to dark slate */
     color: #2b2d42;
-    /* Set comfortable line height for readability */
     line-height: 1.6;
-    /* Ensure minimum height fills the viewport */
     min-height: 100vh;
-    /* Use flexbox column to stick footer to the bottom */
     display: flex;
     flex-direction: column;
 }
 
-/* --------------------------------------------------------------------------
-   Top Government / CET Style Banner & Navigation
-   -------------------------------------------------------------------------- */
+body.home-page {
+    background-image: 
+        linear-gradient(135deg, rgba(13, 37, 63, 0.88) 0%, rgba(13, 59, 102, 0.82) 50%, rgba(10, 25, 47, 0.88) 100%),
+        url('orchid-college.jpg');
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+}
 
-/* Top header bar styling */
+body.home-page .card {
+    background-color: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(8px);
+}
+
+body.home-page .feature-box {
+    background-color: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(8px);
+}
+
+
 header {
-    /* Navy blue background matching CET portals */
     background-color: #0d3b66;
-    /* White text colour */
     color: #ffffff;
-    /* Spacing inside the header */
     padding: 15px 30px;
-    /* Golden accent border on the bottom */
     border-bottom: 4px solid #f4a261;
-    /* Subtle box shadow for depth */
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
-/* Header container for branding */
 .header-container {
-    /* Max width to keep content centered */
     max-width: 1100px;
-    /* Center horizontally */
     margin: 0 auto;
-    /* Flex layout to align emblem/title and nav links */
     display: flex;
-    /* Space between title and links */
     justify-content: space-between;
-    /* Vertically center items */
     align-items: center;
-    /* Wrap on smaller mobile screens */
     flex-wrap: wrap;
-    /* Space between wrapped items */
     gap: 15px;
 }
 
-/* Main portal title inside header */
 .portal-title h1 {
-    /* Font size for the main title */
     font-size: 22px;
-    /* Bold text */
     font-weight: 700;
-    /* Letter spacing */
     letter-spacing: 0.5px;
 }
 
-/* Sub-heading under portal title */
 .portal-title p {
-    /* Smaller font for subtitle */
     font-size: 13px;
-    /* Light golden accent colour */
     color: #f4a261;
-    /* Small top margin */
     margin-top: 2px;
 }
 
-/* Navigation links bar */
 nav {
-    /* Flex container for navigation buttons */
     display: flex;
-    /* Gap between links */
     gap: 12px;
 }
 
-/* Navigation button links */
 nav a {
-    /* White text colour */
     color: #ffffff;
-    /* Remove link underline */
     text-decoration: none;
-    /* Button padding */
     padding: 8px 14px;
-    /* Rounded button corners */
     border-radius: 4px;
-    /* Medium font weight */
     font-weight: 500;
-    /* Font size */
     font-size: 14px;
-    /* Smooth hover transition */
     transition: background-color 0.2s ease;
 }
 
-/* Hover state for navigation links */
 nav a:hover {
-    /* Semi-transparent white background on hover */
     background-color: rgba(255, 255, 255, 0.15);
 }
 
-/* Active or highlighted navigation link */
 nav a.btn-nav-active {
-    /* Golden background for active page */
     background-color: #f4a261;
-    /* Dark text on gold background */
     color: #0d3b66;
-    /* Bold text */
     font-weight: 600;
 }
 
-/* --------------------------------------------------------------------------
-   Notice Bar (CET Official Announcement Ticker)
-   -------------------------------------------------------------------------- */
-
-/* Yellow announcement strip below header */
 .notice-bar {
-    /* Light amber background colour */
     background-color: #fff3cd;
-    /* Amber text colour */
     color: #856404;
-    /* Top and bottom border */
     border-top: 1px solid #ffeeba;
     border-bottom: 1px solid #ffeeba;
-    /* Padding */
     padding: 8px 30px;
-    /* Font size */
     font-size: 13px;
-    /* Center align */
     text-align: center;
-    /* Medium bold text */
     font-weight: 500;
 }
 
-/* --------------------------------------------------------------------------
-   Main Content Layout & Cards
-   -------------------------------------------------------------------------- */
-
-/* Main wrapper holding page content */
 main {
-    /* Grow to fill available vertical space */
     flex: 1;
-    /* Max width centered */
     max-width: 1000px;
-    /* Center horizontally */
     margin: 30px auto;
-    /* Side padding for mobile */
     padding: 0 20px;
-    /* Full width */
     width: 100%;
 }
 
-/* Card container for forms, tables, and dashboards */
 .card {
-    /* White background */
     background-color: #ffffff;
-    /* Rounded corners */
     border-radius: 8px;
-    /* Subtle shadow for a clean elevated look */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    /* Border line */
     border: 1px solid #e2e8f0;
-    /* Spacing inside card */
     padding: 30px;
-    /* Bottom margin */
     margin-bottom: 25px;
 }
 
-/* Card Header Section */
-.card-header {
-    /* Border under card header */
-    border-bottom: 2px solid #f0f4f8;
-    /* Bottom padding */
-    padding-bottom: 15px;
-    /* Bottom margin */
+.hero-section {
+    position: relative;
+    background-image: 
+        linear-gradient(to right, rgba(13, 59, 102, 0.94) 0%, rgba(13, 59, 102, 0.85) 45%, rgba(13, 59, 102, 0.6) 75%, rgba(13, 59, 102, 0.35) 100%),
+        url('orchid-college.jpg');
+    background-size: cover;
+    background-position: center right;
+    background-repeat: no-repeat;
+    color: #ffffff;
+    border: 1px solid #0d3b66;
+    padding: 35px;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(13, 59, 102, 0.15);
     margin-bottom: 25px;
+    min-height: 260px;
+    display: flex;
+    align-items: center;
 }
 
-/* Card title */
-.card-header h2 {
-    /* Deep navy title colour */
+.hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 620px;
+}
+
+.hero-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+}
+
+.hero-badge {
+    display: inline-block;
+    background-color: #f4a261;
     color: #0d3b66;
-    /* Font size */
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 4px 10px;
+    border-radius: 4px;
+}
+
+.hero-subbadge {
+    color: #e2e8f0;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.hero-section .card-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+}
+
+.hero-section .card-header h2 {
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.hero-section .card-header p {
+    color: #cbd5e1;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.hero-section p.hero-desc {
+    color: #f1f5f9;
+    font-size: 14.5px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.hero-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.hero-actions .btn {
+    padding: 10px 18px;
+    font-size: 14px;
+}
+
+.btn-outline-light {
+    background-color: transparent;
+    color: #ffffff;
+    border: 1.5px solid #ffffff;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-outline-light:hover {
+    background-color: #ffffff;
+    color: #0d3b66;
+}
+
+.card-header {
+    border-bottom: 2px solid #f0f4f8;
+    padding-bottom: 15px;
+    margin-bottom: 25px;
+}
+
+.card-header h2 {
+    color: #0d3b66;
     font-size: 22px;
-    /* Bold font */
     font-weight: 700;
 }
 
-/* Card subtitle description */
 .card-header p {
-    /* Soft grey text colour */
     color: #64748b;
-    /* Font size */
     font-size: 14px;
-    /* Margin on top */
     margin-top: 4px;
 }
 
-/* --------------------------------------------------------------------------
-   Home Page Feature Grid & Information Cards
-   -------------------------------------------------------------------------- */
-
-/* Grid container for home page action boxes */
 .feature-grid {
-    /* CSS Grid layout */
     display: grid;
-    /* 3 equal columns on desktop */
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    /* Gap between cards */
     gap: 20px;
-    /* Margin */
     margin-top: 25px;
 }
 
-/* Individual action box on home page */
 .feature-box {
-    /* White background */
     background-color: #ffffff;
-    /* Rounded borders */
     border-radius: 8px;
-    /* Border outline */
     border: 1px solid #e2e8f0;
-    /* Top accent border */
     border-top: 4px solid #0d3b66;
-    /* Inner padding */
     padding: 25px;
-    /* Center align */
     text-align: center;
-    /* Box shadow */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    /* Smooth hover effect */
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Hover lift effect for feature boxes */
 .feature-box:hover {
-    /* Move up slightly on hover */
     transform: translateY(-4px);
-    /* Increase shadow on hover */
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
-/* Icon / Number badge inside feature box */
 .feature-icon {
-    /* Icon font size */
     font-size: 32px;
-    /* Bottom spacing */
     margin-bottom: 12px;
 }
 
-/* Feature box heading */
 .feature-box h3 {
-    /* Heading colour */
     color: #0d3b66;
-    /* Font size */
     font-size: 18px;
-    /* Bottom margin */
     margin-bottom: 10px;
 }
 
-/* Feature box descriptive text */
 .feature-box p {
-    /* Subdued font colour */
     color: #64748b;
-    /* Font size */
     font-size: 14px;
-    /* Spacing before button */
     margin-bottom: 20px;
 }
 
-/* --------------------------------------------------------------------------
-   Form Elements (Inputs, Selects, Labels)
-   -------------------------------------------------------------------------- */
-
-/* Form group holding a label and an input */
 .form-group {
-    /* Bottom margin between form fields */
     margin-bottom: 20px;
 }
 
-/* Form input label */
 .form-group label {
-    /* Display block to place above input */
     display: block;
-    /* Medium bold text */
     font-weight: 600;
-    /* Font size */
     font-size: 14px;
-    /* Bottom spacing before input field */
     margin-bottom: 6px;
-    /* Dark text colour */
     color: #334155;
 }
 
-/* Required asterisk mark */
 .required-star {
-    /* Red asterisk colour */
     color: #e63946;
 }
 
-/* Text input fields, email inputs, password inputs, and selects */
 .form-control {
-    /* Full width */
     width: 100%;
-    /* Comfortable padding inside field */
     padding: 10px 14px;
-    /* Font size */
     font-size: 15px;
-    /* Light grey border */
     border: 1px solid #cbd5e1;
-    /* Rounded corners */
     border-radius: 5px;
-    /* White background */
     background-color: #ffffff;
-    /* Text colour */
     color: #1e293b;
-    /* Smooth focus transition */
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Input field focus state */
 .form-control:focus {
-    /* Remove default outline */
     outline: none;
-    /* Navy blue border on focus */
     border-color: #0d3b66;
-    /* Soft glowing box-shadow */
     box-shadow: 0 0 0 3px rgba(13, 59, 102, 0.15);
 }
 
-/* Helper text below input fields */
 .form-hint {
-    /* Small font size */
     font-size: 12px;
-    /* Muted grey colour */
     color: #64748b;
-    /* Top margin */
     margin-top: 4px;
 }
 
-/* Two-column form layout row */
 .form-row {
-    /* Flex container */
     display: flex;
-    /* Gap between columns */
     gap: 20px;
 }
 
-/* Two-column form item */
 .form-col {
-    /* Each column takes equal 50% width */
     flex: 1;
 }
 
-/* --------------------------------------------------------------------------
-   Buttons
-   -------------------------------------------------------------------------- */
-
-/* Base button styles */
 .btn {
-    /* Inline block display */
     display: inline-block;
-    /* Button padding */
     padding: 10px 22px;
-    /* Font size */
     font-size: 15px;
-    /* Bold text */
     font-weight: 600;
-    /* Center text */
     text-align: center;
-    /* Remove default link underline */
     text-decoration: none;
-    /* Rounded corners */
     border-radius: 5px;
-    /* Pointer cursor on hover */
     cursor: pointer;
-    /* Remove default border */
     border: none;
-    /* Smooth hover transition */
     transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
-/* Button active press down effect */
 .btn:active {
-    /* Slight compression effect */
     transform: scale(0.98);
 }
 
-/* Primary Navy Button */
 .btn-primary {
-    /* Navy background */
     background-color: #0d3b66;
-    /* White text */
     color: #ffffff;
 }
 
-/* Primary button hover */
 .btn-primary:hover {
-    /* Darker navy on hover */
     background-color: #082642;
 }
 
-/* Accent Golden Button */
 .btn-accent {
-    /* Gold background */
     background-color: #f4a261;
-    /* Dark navy text */
     color: #0d3b66;
 }
 
-/* Accent button hover */
 .btn-accent:hover {
-    /* Darker gold on hover */
     background-color: #e76f51;
-    /* White text */
     color: #ffffff;
 }
 
-/* Success Green Button (Approve) */
 .btn-success {
-    /* Green background */
     background-color: #2a9d8f;
-    /* White text */
     color: #ffffff;
 }
 
-/* Success button hover */
 .btn-success:hover {
-    /* Darker green */
     background-color: #21867a;
 }
 
-/* Danger Red Button (Reject) */
 .btn-danger {
-    /* Red background */
     background-color: #e63946;
-    /* White text */
     color: #ffffff;
 }
 
-/* Danger button hover */
 .btn-danger:hover {
-    /* Darker red */
     background-color: #c1121f;
 }
 
-/* Full width button */
 .btn-block {
-    /* Full width */
     width: 100%;
 }
 
-/* Small button for tables */
 .btn-sm {
-    /* Compact padding */
     padding: 6px 12px;
-    /* Smaller font */
     font-size: 13px;
 }
 
-/* --------------------------------------------------------------------------
-   Alert Messages (Success, Error, Info)
-   -------------------------------------------------------------------------- */
-
-/* Alert box */
 .alert {
-    /* Padding inside alert */
     padding: 12px 18px;
-    /* Rounded corners */
     border-radius: 5px;
-    /* Bottom margin */
     margin-bottom: 20px;
-    /* Font size */
     font-size: 14px;
-    /* Hidden by default until message is populated */
     display: none;
 }
 
-/* Success alert */
 .alert-success {
-    /* Light green background */
     background-color: #d1e7dd;
-    /* Dark green text */
     color: #0f5132;
-    /* Green border */
     border: 1px solid #badbcc;
 }
 
-/* Error alert */
 .alert-error {
-    /* Light red background */
     background-color: #f8d7da;
-    /* Dark red text */
     color: #842029;
-    /* Red border */
     border: 1px solid #f5c2c7;
 }
 
-/* Info alert */
 .alert-info {
-    /* Light blue background */
     background-color: #cff4fc;
-    /* Dark blue text */
     color: #055160;
-    /* Blue border */
     border: 1px solid #b6effb;
 }
 
-/* --------------------------------------------------------------------------
-   Status Badges (Pending, Approved, Rejected)
-   -------------------------------------------------------------------------- */
-
-/* Base badge style */
 .badge {
-    /* Inline block */
     display: inline-block;
-    /* Small badge padding */
     padding: 4px 10px;
-    /* Small font size */
     font-size: 12px;
-    /* Bold text */
     font-weight: 700;
-    /* Pill shape */
     border-radius: 20px;
-    /* Uppercase letters */
     text-transform: uppercase;
-    /* Letter spacing */
     letter-spacing: 0.5px;
 }
 
-/* Pending badge (Amber/Yellow) */
 .badge-pending {
-    /* Amber background */
     background-color: #fef3c7;
-    /* Dark amber text */
     color: #92400e;
-    /* Amber border */
     border: 1px solid #fde68a;
 }
 
-/* Approved badge (Green) */
 .badge-approved {
-    /* Soft green background */
     background-color: #d1fae5;
-    /* Dark green text */
     color: #065f46;
-    /* Green border */
     border: 1px solid #a7f3d0;
 }
 
-/* Rejected badge (Red) */
 .badge-rejected {
-    /* Soft red background */
     background-color: #fee2e2;
-    /* Dark red text */
     color: #991b1b;
-    /* Red border */
     border: 1px solid #fecaca;
 }
 
-/* --------------------------------------------------------------------------
-   Tables (Admin Dashboard & Status Details)
-   -------------------------------------------------------------------------- */
-
-/* Responsive table wrapper for horizontal scroll on mobile */
 .table-responsive {
-    /* Allow horizontal scrolling on small screens */
     overflow-x: auto;
-    /* Margin */
     margin-top: 15px;
 }
 
-/* Table styling */
 table {
-    /* Full width */
     width: 100%;
-    /* Collapse double borders */
     border-collapse: collapse;
-    /* Font size */
     font-size: 14px;
-    /* White background */
     background-color: #ffffff;
 }
 
-/* Table header cells */
 table th {
-    /* Navy background */
     background-color: #0d3b66;
-    /* White text */
     color: #ffffff;
-    /* Cell padding */
     padding: 12px 14px;
-    /* Left align text */
     text-align: left;
-    /* Font weight */
     font-weight: 600;
-    /* Prevent text wrapping */
     white-space: nowrap;
 }
 
-/* Table data cells */
 table td {
-    /* Padding */
     padding: 12px 14px;
-    /* Bottom border separator */
     border-bottom: 1px solid #e2e8f0;
-    /* Text color */
     color: #334155;
 }
 
-/* Alternate row striping */
 table tr:nth-child(even) {
-    /* Very light grey background for even rows */
     background-color: #f8fafc;
 }
 
-/* Row hover highlight */
 table tr:hover {
-    /* Soft blue highlight on row hover */
     background-color: #f1f5f9;
 }
 
-/* --------------------------------------------------------------------------
-   Status Detail Grid (status.html)
-   -------------------------------------------------------------------------- */
-
-/* Grid to display student details in status view */
 .detail-grid {
-    /* CSS Grid */
     display: grid;
-    /* Two columns */
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    /* Gap between detail cells */
     gap: 16px;
-    /* Bottom margin */
     margin-top: 20px;
 }
 
-/* Individual detail cell */
 .detail-item {
-    /* Light background */
     background-color: #f8fafc;
-    /* Rounded corners */
     border-radius: 6px;
-    /* Padding */
     padding: 14px;
-    /* Border */
     border: 1px solid #e2e8f0;
 }
 
-/* Detail label */
 .detail-label {
-    /* Small font */
     font-size: 12px;
-    /* Muted grey */
     color: #64748b;
-    /* Uppercase */
     text-transform: uppercase;
-    /* Bold */
     font-weight: 600;
-    /* Bottom spacing */
     margin-bottom: 4px;
 }
 
-/* Detail value */
 .detail-value {
-    /* Font size */
     font-size: 16px;
-    /* Bold */
     font-weight: 600;
-    /* Dark text */
     color: #0d3b66;
 }
 
-/* --------------------------------------------------------------------------
-   Footer
-   -------------------------------------------------------------------------- */
-
-/* Footer styling */
 footer {
-    /* Dark navy background */
     background-color: #082642;
-    /* White text */
     color: #ffffff;
-    /* Padding */
     padding: 20px 30px;
-    /* Center align */
     text-align: center;
-    /* Font size */
     font-size: 13px;
-    /* Top margin to push to bottom */
     margin-top: auto;
-    /* Top border accent */
     border-top: 3px solid #f4a261;
 }
 
-/* Footer subtext */
 footer p {
-    /* Muted light grey */
     color: #cbd5e1;
-    /* Spacing */
     margin-top: 4px;
 }
 
-/* --------------------------------------------------------------------------
-   Responsive Media Queries for Mobile Screens
-   -------------------------------------------------------------------------- */
-
-/* Mobile devices under 768px width */
 @media (max-width: 768px) {
-    /* Stack form row columns vertically */
+
+    .hero-section {
+        background-image: 
+            linear-gradient(rgba(13, 59, 102, 0.90), rgba(13, 59, 102, 0.90)),
+            url('orchid-college.jpg');
+        background-position: center center;
+        padding: 24px 20px;
+    }
+
+    .hero-section .card-header h2 {
+        font-size: 20px;
+    }
+
+    .hero-actions {
+        flex-direction: column;
+    }
+
     .form-row {
         flex-direction: column;
         gap: 0;
     }
 
-    /* Stack header branding and navigation vertically */
     .header-container {
         flex-direction: column;
         align-items: flex-start;
     }
 
-    /* Adjust main padding */
     main {
         padding: 0 15px;
         margin: 20px auto;
     }
 
-    /* Reduce card padding on mobile */
     .card {
         padding: 20px;
     }
 }
 
-/* ==========================================================================
-   WORKFLOW EXTENSIONS: Document Upload, Preferences, Modals, Allocation
-   ========================================================================== */
-
-/* Enhanced Status Badges */
 .badge-awaiting {
     background-color: #ede9fe;
     color: #6b21a8;
@@ -792,7 +590,6 @@ footer p {
     border: 1px solid #fde68a;
 }
 
-/* Section Dividers with Titles */
 .form-section-title {
     font-size: 17px;
     font-weight: 700;
@@ -818,7 +615,6 @@ footer p {
     justify-content: center;
 }
 
-/* Document Upload Grid */
 .doc-upload-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -876,7 +672,6 @@ footer p {
     gap: 6px;
 }
 
-/* Branch Preference Reordering List */
 .pref-list {
     display: flex;
     flex-direction: column;
@@ -953,7 +748,6 @@ footer p {
     cursor: not-allowed;
 }
 
-/* Preferences Review Summary Card */
 .pref-review-box {
     background-color: #f1f5f9;
     border-left: 4px solid #f4a261;
@@ -976,7 +770,6 @@ footer p {
     line-height: 1.8;
 }
 
-/* Modal Dialogs */
 .modal-backdrop {
     position: fixed;
     top: 0;
@@ -1061,7 +854,6 @@ footer p {
     gap: 10px;
 }
 
-/* Document Preview Frame */
 .doc-preview-container {
     width: 100%;
     min-height: 480px;
@@ -1085,7 +877,6 @@ footer p {
     object-fit: contain;
 }
 
-/* Student Provisional Branch Allocation Card */
 .allocation-banner {
     background: linear-gradient(135deg, #0d3b66 0%, #1e3a8a 100%);
     color: #ffffff;
@@ -1112,7 +903,6 @@ footer p {
     flex-wrap: wrap;
 }
 
-/* Confirmed Admission Seal / Certificate */
 .admission-confirmed-card {
     background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
     border: 2px solid #22c55e;
@@ -1135,5 +925,3 @@ footer p {
     text-transform: uppercase;
     letter-spacing: 1px;
 }
-
-

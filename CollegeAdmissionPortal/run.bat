@@ -5,11 +5,12 @@ echo ====================================================================
 echo             COLLEGE ADMISSION PORTAL - OOPS PROJECT
 echo ====================================================================
 echo.
-echo [1/3] Navigating to backend folder...
-cd /d "%~dp0backend"
+echo [1/3] Preparing build environment...
+cd /d "%~dp0"
+if not exist "build" mkdir "build"
 
 echo [2/3] Compiling Java backend classes...
-javac *.java
+javac -d build backend\*.java
 if %errorlevel% neq 0 (
     echo.
     echo [ERROR] Compilation failed! Please check if JDK is installed and on PATH.
@@ -26,10 +27,7 @@ echo To stop the server at any time, press Ctrl+C in this window.
 echo ====================================================================
 echo.
 
-:: Open default browser to the home page
-start http://localhost:8080/
+start "" cmd /c "timeout /t 1 /nobreak >nul & start http://localhost:8080/"
 
-:: Start the Java HTTP server
-java Main
+java -cp build Main
 pause
-

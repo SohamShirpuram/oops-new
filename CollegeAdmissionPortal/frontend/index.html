@@ -1,150 +1,108 @@
 <!DOCTYPE html>
-<!-- Declare standard HTML5 document type -->
 <html lang="en">
 <head>
-    <!-- Define character encoding as UTF-8 -->
     <meta charset="UTF-8">
-    <!-- Responsive viewport settings for mobile and desktop screens -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Web page title displayed on browser tab -->
     <title>State CET Cell - Centralized Admission Portal</title>
-    <!-- Link the external CSS stylesheet for styling -->
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="home-page">
 
-    <!-- ============================================================= -->
-    <!-- TOP HEADER SECTION                                            -->
-    <!-- Contains the portal title and main navigation links           -->
-    <!-- ============================================================= -->
     <header>
         <div class="header-container">
-            <!-- Branding and portal title -->
             <div class="portal-title">
-                <!-- Main portal heading -->
                 <h1>State CET Cell - Admission Portal</h1>
-                <!-- Subheading explaining purpose -->
-                <p>Government of Maharashtra • Centralized Admission Process (CAP)</p>
+                <p>N. K. Orchid College of Engineering &amp; Technology, Solapur • Centralized Admission Process (CAP)</p>
             </div>
 
-            <!-- Navigation buttons -->
             <nav>
-                <!-- Link to Home Page (active) -->
                 <a href="index.html" class="btn-nav-active">Home</a>
-                <!-- Link to Student Registration -->
                 <a href="register.html">Student Register</a>
-                <!-- Link to Student Login -->
                 <a href="login.html">Student Login</a>
-                <!-- Link to Application Status check -->
                 <a href="status.html">Check Status</a>
-                <!-- Link to Admin Login -->
                 <a href="admin-login.html">Admin Portal</a>
             </nav>
         </div>
     </header>
 
-    <!-- Notice Bar for official announcements -->
     <div class="notice-bar">
-        <!-- Official announcement ticker -->
-        <strong>Notice:</strong> Online Centralized Admission Process (CAP) for Degree Engineering & Technology Courses is now OPEN.
+        <strong>Notice:</strong> Online Centralized Admission Process (CAP) for Degree Engineering &amp; Technology Courses is now OPEN.
     </div>
 
-    <!-- ============================================================= -->
-    <!-- MAIN CONTENT SECTION                                          -->
-    <!-- ============================================================= -->
     <main>
 
-        <!-- Welcome information card -->
-        <section class="card">
-            <div class="card-header">
-                <!-- Welcome heading -->
-                <h2>Welcome to Centralized Admission Portal</h2>
-                <!-- Introduction description -->
-                <p>Online registration, application form submission, document verification, and seat allotment status.</p>
-            </div>
+        <section class="card hero-section">
+            <div class="hero-content">
+                <div class="hero-brand">
+                    <span class="hero-badge">Orchid College of Engineering &amp; Technology</span>
+                    <span class="hero-subbadge">Centralized Admission Process (CAP)</span>
+                </div>
+                <div class="card-header">
+                    <h2>Welcome to Centralized Admission Portal</h2>
+                    <p>Online registration, application form submission, document verification, and seat allotment status.</p>
+                </div>
 
-            <!-- Paragraph explaining how the admission process works -->
-            <p>
-                Candidates seeking admission to first-year undergraduate degree courses in Engineering and Technology
-                can complete their application online. Please ensure you have your SSC, HSC, and CET scores ready before
-                filling out the application.
-            </p>
+                <p class="hero-desc">
+                    Candidates seeking admission to first-year undergraduate degree courses in Engineering and Technology
+                    can complete their application online. Please ensure you have your SSC, HSC, and CET scores ready before
+                    filling out the application.
+                </p>
+
+                <div class="hero-actions">
+                    <a href="register.html" class="btn btn-primary">Start New Registration</a>
+                    <a href="login.html" class="btn btn-accent">Student Login</a>
+                    <a href="status.html" class="btn btn-outline-light">Track Application</a>
+                </div>
+            </div>
         </section>
 
-        <!-- Feature Grid: 3 Quick Access Cards -->
         <section class="feature-grid">
 
-            <!-- Card 1: New Student Registration -->
             <div class="feature-box">
-                <!-- Icon for registration -->
                 <div class="feature-icon">&#128100;</div>
-                <!-- Box title -->
                 <h3>New Registration</h3>
-                <!-- Box description -->
                 <p>First-time applicants must register to generate their Student ID and login credentials.</p>
-                <!-- Button leading to registration page -->
                 <a href="register.html" class="btn btn-primary">Register Now</a>
             </div>
 
-            <!-- Card 2: Student Login & Application Form -->
             <div class="feature-box">
-                <!-- Icon for login -->
                 <div class="feature-icon">&#128273;</div>
-                <!-- Box title -->
                 <h3>Student Login</h3>
-                <!-- Box description -->
                 <p>Already registered? Log in to complete your admission form and upload academic marks.</p>
-                <!-- Button leading to login page -->
                 <a href="login.html" class="btn btn-accent">Login to Apply</a>
             </div>
 
-            <!-- Card 3: Check Application Status -->
             <div class="feature-box">
-                <!-- Icon for status -->
                 <div class="feature-icon">&#128203;</div>
-                <!-- Box title -->
                 <h3>Application Status</h3>
-                <!-- Box description -->
                 <p>Track the current verification and approval status of your submitted application.</p>
-                <!-- Button leading to status page -->
                 <a href="status.html" class="btn btn-primary">Track Status</a>
             </div>
 
         </section>
 
-        <!-- Card explaining the Admission Steps for candidates -->
         <section class="card" style="margin-top: 25px;">
             <div class="card-header">
-                <!-- Section heading -->
                 <h2>Steps for Centralized Admission Workflow</h2>
-                <!-- Subtitle -->
                 <p>Follow the streamlined centralized admission workflow from application to final confirmation</p>
             </div>
 
-            <!-- Ordered list detailing each step -->
             <ol style="padding-left: 20px; line-height: 2.2;">
-                <li><strong>Step 1 - Account Registration & Login:</strong> Create your candidate account and log in.</li>
-                <li><strong>Step 2 - Academic Scores & Category:</strong> Enter your 10th SSC, 12th HSC marks, and MHT-CET percentile.</li>
+                <li><strong>Step 1 - Account Registration &amp; Login:</strong> Create your candidate account and log in.</li>
+                <li><strong>Step 2 - Academic Scores &amp; Category:</strong> Enter your 10th SSC, 12th HSC marks, and MHT-CET percentile.</li>
                 <li><strong>Step 3 - Mandatory Document Upload:</strong> Upload clear scans of your Aadhaar Card, SSC, HSC, and CET marksheets (PDF/JPG/PNG).</li>
                 <li><strong>Step 4 - Branch Preference Ordering:</strong> Arrange preferred engineering branches in priority order (1st to 6th) and submit your application.</li>
-                <li><strong>Step 5 - Admin Verification & Branch Allocation:</strong> The college admission committee reviews credentials and allocates an available engineering branch based on merit.</li>
+                <li><strong>Step 5 - Admin Verification &amp; Branch Allocation:</strong> The college admission committee reviews credentials and allocates an available engineering branch based on merit.</li>
                 <li><strong>Step 6 - Student Branch Acceptance:</strong> Review the allocated seat, admin remarks, and explicitly Accept to confirm admission.</li>
             </ol>
         </section>
 
-
     </main>
 
-    <!-- ============================================================= -->
-    <!-- FOOTER SECTION                                                -->
-    <!-- ============================================================= -->
     <footer>
-        <!-- Copyright and project details -->
         <p>&copy; 2026 State Common Entrance Test Cell • College Admission Portal</p>
-        <!-- Educational project notice -->
-        <p>Object-Oriented Programming (OOPS) College Project • Core Java & File Handling</p>
+        <p>Object-Oriented Programming (OOPS) College Project • Core Java &amp; File Handling</p>
     </footer>
 
 </body>
 </html>
-

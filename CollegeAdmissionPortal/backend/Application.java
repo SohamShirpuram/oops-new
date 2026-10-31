@@ -1,97 +1,28 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * ============================================================================
- * Class Name: Application
- * OOP Concepts Demonstrated:
- *   1. Encapsulation: Private member variables with public getters and setters
- *   2. Constructors: Overloaded constructors to initialize application objects
- *   3. Methods: Business methods to validate marks, serialize/deserialize text data
- *   4. Collections: Stores ordered branch preferences and document references
- * ============================================================================
- * What this class does:
- *   - Encapsulates all data related to a student's admission application.
- *   - Stores academic performance (10th SSC, 12th HSC, CET score).
- *   - Stores multiple branch preferences in priority order.
- *   - Tracks uploaded document references.
- *   - Tracks document verification and branch allocation lifecycle:
- *       Pending Allocation -> Branch Allocated -> Awaiting Student Acceptance ->
- *       Accepted (Admission Confirmed) OR Allocation Rejected by Student.
- *
- * Where the data is saved:
- *   - Persisted in the "data/applications.txt" file by AdmissionSystem.java.
- * ============================================================================
- */
 public class Application {
 
-    // -------------------------------------------------------------
-    // Private instance variables (Encapsulation)
-    // -------------------------------------------------------------
-
-    // Unique application reference ID (e.g. APP1001)
     private String applicationId;
-
-    // Email of the student applicant
     private String studentEmail;
-
-    // Full name of the applicant student
     private String studentName;
-
-    // 10th Standard (SSC) percentage
     private double sscMarks;
-
-    // 12th Standard (HSC) percentage
     private double hscMarks;
-
-    // CET entrance exam percentile/score
     private double cetScore;
-
-    // Primary branch applied for / 1st preference (e.g. Computer Engineering)
     private String courseChoice;
-
-    // Admission category (e.g., General, OBC, SC, ST, EWS)
     private String category;
-
-    // Overall application status (e.g., Pending, Branch Allocated, Accepted, Rejected)
     private String status;
-
-    // Remarks or feedback from the admission committee
     private String remarks;
 
-    // -------------------------------------------------------------
-    // New Workflow Variables: Branch Preferences & Allocation
-    // -------------------------------------------------------------
-
-    // List of student's branch preferences in priority order (1st to 6th)
     private List<String> branchPreferences;
-
-    // The branch currently allocated by the college admission committee
     private String allocatedBranch;
-
-    // Allocation Status: "Pending Allocation", "Branch Allocated",
-    //                    "Awaiting Student Acceptance", "Accepted", "Rejected",
-    //                    "Allocation Rejected by Student"
     private String allocationStatus;
-
-    // Document Verification Status: "Pending Verification", "Documents Verified",
-    //                               "Verification Rejected"
     private String verificationStatus;
-
-    // Map storing uploaded documents: docType -> storedFileName (e.g. "aadhaar" -> "aadhaar_card.pdf")
     private Map<String, String> uploadedDocuments;
-
-    // Specific remarks regarding branch allocation
     private String allocationRemarks;
 
-    // -------------------------------------------------------------
-    // Constructors (Overloading)
-    // -------------------------------------------------------------
-
-    // Default Constructor
     public Application() {
         this.branchPreferences = new ArrayList<>();
         this.uploadedDocuments = new LinkedHashMap<>();
@@ -101,10 +32,9 @@ public class Application {
         this.allocationRemarks = "";
     }
 
-    // Basic Constructor (for backward compatibility)
     public Application(String applicationId, String studentEmail, String studentName,
-                       double sscMarks, double hscMarks, double cetScore,
-                       String courseChoice, String category, String status, String remarks) {
+            double sscMarks, double hscMarks, double cetScore,
+            String courseChoice, String category, String status, String remarks) {
         this();
         this.applicationId = applicationId;
         this.studentEmail = studentEmail;
@@ -121,7 +51,6 @@ public class Application {
             this.branchPreferences.add(courseChoice.trim());
         }
 
-        // Set sensible defaults based on status
         if ("Approved".equalsIgnoreCase(status) || "Accepted".equalsIgnoreCase(status)) {
             this.allocatedBranch = courseChoice;
             this.allocationStatus = "Accepted";
@@ -131,13 +60,12 @@ public class Application {
         }
     }
 
-    // Full Parameterized Constructor
     public Application(String applicationId, String studentEmail, String studentName,
-                       double sscMarks, double hscMarks, double cetScore,
-                       String courseChoice, String category, String status, String remarks,
-                       List<String> branchPreferences, String allocatedBranch,
-                       String allocationStatus, String verificationStatus,
-                       Map<String, String> uploadedDocuments, String allocationRemarks) {
+            double sscMarks, double hscMarks, double cetScore,
+            String courseChoice, String category, String status, String remarks,
+            List<String> branchPreferences, String allocatedBranch,
+            String allocationStatus, String verificationStatus,
+            Map<String, String> uploadedDocuments, String allocationRemarks) {
         this.applicationId = applicationId;
         this.studentEmail = studentEmail;
         this.studentName = studentName;
@@ -156,54 +84,41 @@ public class Application {
         this.allocationRemarks = allocationRemarks != null ? allocationRemarks : "";
     }
 
-    // -------------------------------------------------------------
-    // Method: toDataString
-    // What it does: Serializes this application into a pipe-delimited line.
-    // Format:
-    // AppID|Email|Name|SSC|HSC|CET|Course|Category|Status|Remarks|Preferences|AllocatedBranch|AllocationStatus|VerificationStatus|Documents|AllocRemarks
-    // -------------------------------------------------------------
     public String toDataString() {
-        // Serialize preferences list as semicolon separated string
         String prefsStr = String.join(";", branchPreferences);
 
-        // Serialize uploaded documents map as semicolon separated key:value pairs
         StringBuilder docsSb = new StringBuilder();
         int count = 0;
         for (Map.Entry<String, String> entry : uploadedDocuments.entrySet()) {
-            if (count > 0) docsSb.append(";");
+            if (count > 0)
+                docsSb.append(";");
             docsSb.append(entry.getKey()).append(":").append(entry.getValue());
             count++;
         }
 
         return applicationId + "|" +
-               studentEmail + "|" +
-               studentName + "|" +
-               sscMarks + "|" +
-               hscMarks + "|" +
-               cetScore + "|" +
-               (courseChoice != null ? courseChoice : "") + "|" +
-               category + "|" +
-               status + "|" +
-               (remarks != null ? remarks : "") + "|" +
-               prefsStr + "|" +
-               (allocatedBranch != null ? allocatedBranch : "") + "|" +
-               (allocationStatus != null ? allocationStatus : "Pending Allocation") + "|" +
-               (verificationStatus != null ? verificationStatus : "Pending Verification") + "|" +
-               docsSb.toString() + "|" +
-               (allocationRemarks != null ? allocationRemarks : "");
+                studentEmail + "|" +
+                studentName + "|" +
+                sscMarks + "|" +
+                hscMarks + "|" +
+                cetScore + "|" +
+                (courseChoice != null ? courseChoice : "") + "|" +
+                category + "|" +
+                status + "|" +
+                (remarks != null ? remarks : "") + "|" +
+                prefsStr + "|" +
+                (allocatedBranch != null ? allocatedBranch : "") + "|" +
+                (allocationStatus != null ? allocationStatus : "Pending Allocation") + "|" +
+                (verificationStatus != null ? verificationStatus : "Pending Verification") + "|" +
+                docsSb.toString() + "|" +
+                (allocationRemarks != null ? allocationRemarks : "");
     }
 
-    // -------------------------------------------------------------
-    // Static Method: fromDataString
-    // What it does: Parses a single line from data/applications.txt into an Application object.
-    // Supports both old 10-column records and new 16-column records seamlessly.
-    // -------------------------------------------------------------
     public static Application fromDataString(String dataLine) {
         if (dataLine == null || dataLine.trim().isEmpty() || dataLine.startsWith("#")) {
             return null;
         }
 
-        // Split by pipe '|', passing -1 to preserve trailing empty tokens
         String[] parts = dataLine.split("\\|", -1);
 
         if (parts.length >= 10) {
@@ -216,7 +131,6 @@ public class Application {
                 hsc = Double.parseDouble(parts[4].trim());
                 cet = Double.parseDouble(parts[5].trim());
             } catch (NumberFormatException e) {
-                // Keep default 0.0 on format error
             }
             String course = parts[6].trim();
             String cat = parts[7].trim();
@@ -230,7 +144,6 @@ public class Application {
             Map<String, String> docs = new LinkedHashMap<>();
             String allocRemarks = "";
 
-            // Parse extended fields if present
             if (parts.length > 10 && !parts[10].trim().isEmpty()) {
                 String[] pArray = parts[10].trim().split(";");
                 for (String p : pArray) {
@@ -279,15 +192,12 @@ public class Application {
             }
 
             return new Application(appId, email, name, ssc, hsc, cet, course, cat, status, remarks,
-                                   prefs, allocBranch, allocStatus, verifStatus, docs, allocRemarks);
+                    prefs, allocBranch, allocStatus, verifStatus, docs, allocRemarks);
         }
 
         return null;
     }
 
-    // -------------------------------------------------------------
-    // Document Management Helper Methods
-    // -------------------------------------------------------------
     public void addUploadedDocument(String docType, String fileName) {
         if (uploadedDocuments == null) {
             uploadedDocuments = new LinkedHashMap<>();
@@ -296,18 +206,17 @@ public class Application {
     }
 
     public String getUploadedDocument(String docType) {
-        if (uploadedDocuments == null || docType == null) return null;
+        if (uploadedDocuments == null || docType == null)
+            return null;
         return uploadedDocuments.get(docType.trim().toLowerCase());
     }
 
     public boolean hasDocument(String docType) {
-        if (uploadedDocuments == null || docType == null) return false;
+        if (uploadedDocuments == null || docType == null)
+            return false;
+
         return uploadedDocuments.containsKey(docType.trim().toLowerCase());
     }
-
-    // -------------------------------------------------------------
-    // Getters and Setters (Encapsulation)
-    // -------------------------------------------------------------
 
     public String getApplicationId() {
         return applicationId;

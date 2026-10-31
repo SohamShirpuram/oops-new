@@ -1,28 +1,25 @@
 <!DOCTYPE html>
-<!-- Declare standard HTML5 document type -->
+
 <html lang="en">
 <head>
-    <!-- Character set definition -->
+
     <meta charset="UTF-8">
-    <!-- Viewport configuration for mobile responsiveness -->
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Page title -->
+
     <title>Candidate Login - CET Admission Portal</title>
-    <!-- Link external CSS stylesheet -->
+
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- ============================================================= -->
-    <!-- HEADER SECTION                                                -->
-    <!-- ============================================================= -->
     <header>
         <div class="header-container">
             <div class="portal-title">
                 <h1>State CET Cell - Admission Portal</h1>
                 <p>Registered Candidate Login</p>
             </div>
-            <!-- Navigation links -->
+
             <nav>
                 <a href="index.html">Home</a>
                 <a href="register.html">Student Register</a>
@@ -32,53 +29,40 @@
         </div>
     </header>
 
-    <!-- Notice Bar -->
     <div class="notice-bar">
         Enter your registered email and password to access the admission application form.
     </div>
 
-    <!-- ============================================================= -->
-    <!-- MAIN CONTENT SECTION (LOGIN FORM)                             -->
-    <!-- ============================================================= -->
     <main>
         <div class="card" style="max-width: 500px; margin: 0 auto;">
 
-            <!-- Card Header -->
             <div class="card-header">
                 <h2>Candidate Login</h2>
                 <p>Sign in to fill your application or check your admission status.</p>
             </div>
 
-            <!-- Success Alert Box (Used for redirect alerts) -->
             <div id="successAlert" class="alert alert-success"></div>
 
-            <!-- Error Alert Box -->
             <div id="errorAlert" class="alert alert-error"></div>
 
-            <!-- Login Form -->
             <form id="loginForm">
 
-                <!-- Email Input Field -->
                 <div class="form-group">
                     <label for="email">Registered Email Address <span class="required-star">*</span></label>
                     <input type="email" id="email" name="email" class="form-control" placeholder="e.g. rahul@gmail.com" required>
                 </div>
 
-                <!-- Password Input Field -->
                 <div class="form-group">
                     <label for="password">Password <span class="required-star">*</span></label>
                     <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
                 </div>
 
-                <!-- Submit Button -->
                 <button type="submit" class="btn btn-primary btn-block">Sign In</button>
 
-                <!-- New registration link -->
                 <p style="text-align: center; margin-top: 20px; font-size: 14px;">
                     New candidate? <a href="register.html" style="color: #0d3b66; font-weight: 600;">Register here</a>
                 </p>
 
-                <!-- Sample credential reminder for student demo -->
                 <div style="margin-top: 20px; padding: 10px; background-color: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 4px; font-size: 13px; color: #64748b;">
                     <strong>Sample Test Account:</strong><br>
                     Email: <code>rahul@gmail.com</code> | Password: <code>rahul123</code>
@@ -89,47 +73,35 @@
         </div>
     </main>
 
-    <!-- ============================================================= -->
-    <!-- FOOTER SECTION                                                -->
-    <!-- ============================================================= -->
     <footer>
         <p>&copy; 2026 State Common Entrance Test Cell • College Admission Portal</p>
     </footer>
 
-    <!-- ============================================================= -->
-    <!-- JAVASCRIPT: Connects HTML form to Core Java Backend            -->
-    <!-- ============================================================= -->
     <script>
-        // Check if email was passed in URL from registration page
+
         const urlParams = new URLSearchParams(window.location.search);
         const prefilledEmail = urlParams.get('email');
         if (prefilledEmail) {
             document.getElementById('email').value = prefilledEmail;
         }
 
-        // Form and alert element references
         const loginForm = document.getElementById('loginForm');
         const successAlert = document.getElementById('successAlert');
         const errorAlert = document.getElementById('errorAlert');
 
-        // Listen for form submission
         loginForm.addEventListener('submit', function(event) {
             event.preventDefault(); // Stop normal form submit
 
-            // Reset alert displays
             successAlert.style.display = 'none';
             errorAlert.style.display = 'none';
 
-            // Extract input values
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
-            // Prepare POST parameters
             const formData = new URLSearchParams();
             formData.append('email', email);
             formData.append('password', password);
 
-            // Send request to Java backend /api/login endpoint
             fetch('/api/login', {
                 method: 'POST',
                 headers: {
@@ -140,21 +112,19 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Save logged-in student info in browser sessionStorage
+
                     sessionStorage.setItem('studentEmail', data.email);
                     sessionStorage.setItem('studentName', data.name);
                     sessionStorage.setItem('studentId', data.id);
 
-                    // Show success message
                     successAlert.textContent = "Login successful! Redirecting to application form...";
                     successAlert.style.display = 'block';
 
-                    // Redirect to application form after 1 second
                     setTimeout(() => {
                         window.location.href = 'application.html';
                     }, 1000);
                 } else {
-                    // Show error message returned by backend
+
                     errorAlert.textContent = data.message;
                     errorAlert.style.display = 'block';
                 }
@@ -168,4 +138,3 @@
 
 </body>
 </html>
-

@@ -1,46 +1,12 @@
-import java.io.File;
-
-/**
- * ============================================================================
- * Class Name: Document
- * OOP Concepts Demonstrated:
- *   1. Encapsulation: Private member variables with public getters and setters.
- *   2. Data Abstraction: Models an uploaded student credential document.
- * ============================================================================
- * What this class does:
- *   - Represents a student verification document (e.g. Aadhaar Card, SSC Marksheet,
- *     HSC Marksheet, CET Scorecard, Other supporting document).
- *   - Stores file metadata including document type, original file name, stored
- *     file name, file size, and upload timestamp.
- * ============================================================================
- */
 public class Document {
 
-    // -------------------------------------------------------------
-    // Private instance variables (Encapsulation)
-    // -------------------------------------------------------------
-
-    // Type identifier: "aadhaar", "ssc", "hsc", "cet", or "other"
     private String docType;
-
-    // Human-readable title: "Aadhaar Card", "SSC Marksheet", etc.
     private String docTitle;
-
-    // Original file name uploaded by candidate (e.g. "my_aadhaar.pdf")
     private String originalFileName;
-
-    // Stored file name on server disk (e.g. "aadhaar_my_aadhaar.pdf")
     private String storedFileName;
-
-    // File size in bytes
     private long fileSize;
-
-    // File format / MIME type (e.g. "application/pdf", "image/png", "image/jpeg")
     private String fileType;
 
-    // -------------------------------------------------------------
-    // Constructors
-    // -------------------------------------------------------------
     public Document() {
     }
 
@@ -54,7 +20,6 @@ public class Document {
         this.fileType = fileType;
     }
 
-    // Helper: Maps document type key to official title
     public static String getTitleForType(String docType) {
         if (docType == null) return "Supporting Document";
         switch (docType.toLowerCase()) {
@@ -73,7 +38,6 @@ public class Document {
         }
     }
 
-    // Helper: Returns readable file size (e.g. "1.2 MB", "450 KB")
     public String getFormattedFileSize() {
         if (fileSize <= 0) return "0 KB";
         if (fileSize < 1024) return fileSize + " B";
@@ -83,9 +47,6 @@ public class Document {
         return String.format("%.2f MB", fileSize / (1024.0 * 1024.0));
     }
 
-    // -------------------------------------------------------------
-    // Getters and Setters (Encapsulation)
-    // -------------------------------------------------------------
     public String getDocType() {
         return docType;
     }

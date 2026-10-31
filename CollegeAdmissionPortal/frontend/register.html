@@ -1,28 +1,25 @@
 <!DOCTYPE html>
-<!-- Declare standard HTML5 document type -->
+
 <html lang="en">
 <head>
-    <!-- Set character encoding -->
+
     <meta charset="UTF-8">
-    <!-- Viewport settings for responsiveness -->
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Page title -->
+
     <title>Candidate Registration - CET Admission Portal</title>
-    <!-- Link the CSS stylesheet -->
+
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- ============================================================= -->
-    <!-- HEADER SECTION                                                -->
-    <!-- ============================================================= -->
     <header>
         <div class="header-container">
             <div class="portal-title">
                 <h1>State CET Cell - Admission Portal</h1>
                 <p>New Candidate Registration</p>
             </div>
-            <!-- Navigation links -->
+
             <nav>
                 <a href="index.html">Home</a>
                 <a href="register.html" class="btn-nav-active">Student Register</a>
@@ -32,65 +29,50 @@
         </div>
     </header>
 
-    <!-- Notice Bar -->
     <div class="notice-bar">
         Please fill valid details. Your registered email will be used as your Student Login ID.
     </div>
 
-    <!-- ============================================================= -->
-    <!-- MAIN CONTENT SECTION (REGISTRATION FORM)                      -->
-    <!-- ============================================================= -->
     <main>
         <div class="card" style="max-width: 600px; margin: 0 auto;">
 
-            <!-- Card Header -->
             <div class="card-header">
                 <h2>Student Registration</h2>
                 <p>Enter your details to create your admission applicant account.</p>
             </div>
 
-            <!-- Success Alert Box (Initially hidden) -->
             <div id="successAlert" class="alert alert-success"></div>
 
-            <!-- Error Alert Box (Initially hidden) -->
             <div id="errorAlert" class="alert alert-error"></div>
 
-            <!-- Registration Form -->
-            <!-- The form will be intercepted by JavaScript to send an HTTP POST to Java backend -->
             <form id="registerForm">
 
-                <!-- Full Name Input Field -->
                 <div class="form-group">
                     <label for="name">Candidate Full Name <span class="required-star">*</span></label>
                     <input type="text" id="name" name="name" class="form-control" placeholder="e.g. Rahul Sharma" required>
                     <div class="form-hint">Enter your name as printed on your 10th/12th marksheet.</div>
                 </div>
 
-                <!-- Email Input Field -->
                 <div class="form-group">
                     <label for="email">Email Address <span class="required-star">*</span></label>
                     <input type="email" id="email" name="email" class="form-control" placeholder="e.g. rahul@gmail.com" required>
                     <div class="form-hint">This will be your username for login.</div>
                 </div>
 
-                <!-- Password Input Field -->
                 <div class="form-group">
                     <label for="password">Create Password <span class="required-star">*</span></label>
                     <input type="password" id="password" name="password" class="form-control" placeholder="Choose a secure password" required minlength="4">
                     <div class="form-hint">Minimum 4 characters.</div>
                 </div>
 
-                <!-- Phone Number Input Field -->
                 <div class="form-group">
                     <label for="phone">Mobile Number <span class="required-star">*</span></label>
                     <input type="tel" id="phone" name="phone" class="form-control" placeholder="e.g. 9876543210" required pattern="[0-9]{10}">
                     <div class="form-hint">10-digit mobile number for admission SMS alerts.</div>
                 </div>
 
-                <!-- Submit Button -->
                 <button type="submit" class="btn btn-primary btn-block">Register Account</button>
 
-                <!-- Already registered link -->
                 <p style="text-align: center; margin-top: 20px; font-size: 14px;">
                     Already have an account? <a href="login.html" style="color: #0d3b66; font-weight: 600;">Login here</a>
                 </p>
@@ -100,46 +82,35 @@
         </div>
     </main>
 
-    <!-- ============================================================= -->
-    <!-- FOOTER SECTION                                                -->
-    <!-- ============================================================= -->
     <footer>
         <p>&copy; 2026 State Common Entrance Test Cell • College Admission Portal</p>
     </footer>
 
-    <!-- ============================================================= -->
-    <!-- JAVASCRIPT: Connects HTML form to Core Java Backend            -->
-    <!-- ============================================================= -->
     <script>
-        // Select the registration form element from the DOM
+
         const registerForm = document.getElementById('registerForm');
-        // Select alert message boxes
+
         const successAlert = document.getElementById('successAlert');
         const errorAlert = document.getElementById('errorAlert');
 
-        // Add a submit event listener to the form
         registerForm.addEventListener('submit', function(event) {
-            // Prevent standard browser page reload so we can handle response smoothly
+
             event.preventDefault();
 
-            // Hide any previous alert messages
             successAlert.style.display = 'none';
             errorAlert.style.display = 'none';
 
-            // Collect form input values
             const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const phone = document.getElementById('phone').value;
 
-            // Prepare URL-encoded form data to send in the HTTP POST body
             const formData = new URLSearchParams();
             formData.append('name', name);
             formData.append('email', email);
             formData.append('password', password);
             formData.append('phone', phone);
 
-            // Send HTTP POST request to the Java backend endpoint (/api/register)
             fetch('/api/register', {
                 method: 'POST',
                 headers: {
@@ -147,28 +118,28 @@
                 },
                 body: formData.toString()
             })
-            // Convert server response to JSON
+
             .then(response => response.json())
             .then(data => {
-                // If registration was successful in Java backend
+
                 if (data.success) {
-                    // Show success message
+
                     successAlert.textContent = data.message + " Redirecting to login...";
                     successAlert.style.display = 'block';
-                    // Clear the form fields
+
                     registerForm.reset();
-                    // Redirect student to login page after 2 seconds
+
                     setTimeout(() => {
                         window.location.href = 'login.html?email=' + encodeURIComponent(email);
                     }, 2000);
                 } else {
-                    // Show error message returned by Java backend (e.g. Email duplicate)
+
                     errorAlert.textContent = data.message;
                     errorAlert.style.display = 'block';
                 }
             })
             .catch(error => {
-                // Handle network or connection error
+
                 errorAlert.textContent = 'Server communication error. Please ensure Java backend is running.';
                 errorAlert.style.display = 'block';
             });
@@ -177,4 +148,3 @@
 
 </body>
 </html>
-

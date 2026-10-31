@@ -1,16 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - CET Admission Scrutiny & Branch Allocation</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-    <!-- ============================================================= -->
-    <!-- HEADER SECTION                                                -->
-    <!-- ============================================================= -->
     <header>
         <div class="header-container">
             <div class="portal-title">
@@ -25,57 +24,68 @@
         </div>
     </header>
 
-    <!-- Notice Bar -->
     <div class="notice-bar">
-        Admission Scrutiny Panel: Verify candidate credentials, inspect uploaded documents, and allocate engineering branches based on merit.
+        Admission Scrutiny Panel: Verify candidate credentials, inspect uploaded documents, and allocate engineering
+        branches based on merit.
     </div>
 
-    <!-- ============================================================= -->
-    <!-- MAIN CONTENT SECTION (ADMIN DASHBOARD)                        -->
-    <!-- ============================================================= -->
     <main style="max-width: 1250px;">
 
-        <!-- Summary Statistics Cards Row -->
-        <section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 25px;">
-            <div class="card" style="margin-bottom: 0; padding: 15px; text-align: center; border-left: 4px solid #0d3b66;">
-                <div style="font-size: 12px; color: #64748b; text-transform: uppercase; font-weight: 600;">Total Applications</div>
+        <section
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 25px;">
+            <div class="card"
+                style="margin-bottom: 0; padding: 15px; text-align: center; border-left: 4px solid #0d3b66;">
+                <div style="font-size: 12px; color: #64748b; text-transform: uppercase; font-weight: 600;">Total
+                    Applications</div>
                 <div id="statTotal" style="font-size: 26px; font-weight: 700; color: #0d3b66; margin-top: 4px;">0</div>
             </div>
 
-            <div class="card" style="margin-bottom: 0; padding: 15px; text-align: center; border-left: 4px solid #f59e0b;">
-                <div style="font-size: 12px; color: #64748b; text-transform: uppercase; font-weight: 600;">Pending Allocation</div>
-                <div id="statPending" style="font-size: 26px; font-weight: 700; color: #d97706; margin-top: 4px;">0</div>
+            <div class="card"
+                style="margin-bottom: 0; padding: 15px; text-align: center; border-left: 4px solid #f59e0b;">
+                <div style="font-size: 12px; color: #64748b; text-transform: uppercase; font-weight: 600;">Pending
+                    Allocation</div>
+                <div id="statPending" style="font-size: 26px; font-weight: 700; color: #d97706; margin-top: 4px;">0
+                </div>
             </div>
 
-            <div class="card" style="margin-bottom: 0; padding: 15px; text-align: center; border-left: 4px solid #8b5cf6;">
-                <div style="font-size: 12px; color: #64748b; text-transform: uppercase; font-weight: 600;">Awaiting Student</div>
-                <div id="statAwaiting" style="font-size: 26px; font-weight: 700; color: #7c3aed; margin-top: 4px;">0</div>
+            <div class="card"
+                style="margin-bottom: 0; padding: 15px; text-align: center; border-left: 4px solid #8b5cf6;">
+                <div style="font-size: 12px; color: #64748b; text-transform: uppercase; font-weight: 600;">Awaiting
+                    Student</div>
+                <div id="statAwaiting" style="font-size: 26px; font-weight: 700; color: #7c3aed; margin-top: 4px;">0
+                </div>
             </div>
 
-            <div class="card" style="margin-bottom: 0; padding: 15px; text-align: center; border-left: 4px solid #2a9d8f;">
-                <div style="font-size: 12px; color: #64748b; text-transform: uppercase; font-weight: 600;">Admission Confirmed</div>
-                <div id="statAccepted" style="font-size: 26px; font-weight: 700; color: #2a9d8f; margin-top: 4px;">0</div>
+            <div class="card"
+                style="margin-bottom: 0; padding: 15px; text-align: center; border-left: 4px solid #2a9d8f;">
+                <div style="font-size: 12px; color: #64748b; text-transform: uppercase; font-weight: 600;">Admission
+                    Confirmed</div>
+                <div id="statAccepted" style="font-size: 26px; font-weight: 700; color: #2a9d8f; margin-top: 4px;">0
+                </div>
             </div>
 
-            <div class="card" style="margin-bottom: 0; padding: 15px; text-align: center; border-left: 4px solid #e63946;">
-                <div style="font-size: 12px; color: #64748b; text-transform: uppercase; font-weight: 600;">Rejected</div>
-                <div id="statRejected" style="font-size: 26px; font-weight: 700; color: #e63946; margin-top: 4px;">0</div>
+            <div class="card"
+                style="margin-bottom: 0; padding: 15px; text-align: center; border-left: 4px solid #e63946;">
+                <div style="font-size: 12px; color: #64748b; text-transform: uppercase; font-weight: 600;">Rejected
+                </div>
+                <div id="statRejected" style="font-size: 26px; font-weight: 700; color: #e63946; margin-top: 4px;">0
+                </div>
             </div>
         </section>
 
-        <!-- Main Applications Table Card -->
         <section class="card">
-            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div class="card-header"
+                style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                 <div>
                     <h2>Candidate Applications Scrutiny & Branch Allocation</h2>
-                    <p>Click <strong>Scrutiny & Allocate</strong> to verify documents, view ordered branch choices, and assign a branch.</p>
+                    <p>Click <strong>Scrutiny & Allocate</strong> to verify documents, view ordered branch choices, and
+                        assign a branch.</p>
                 </div>
                 <button onclick="loadApplications();" class="btn btn-primary btn-sm">&#8635; Refresh List</button>
             </div>
 
             <div id="actionAlert" class="alert alert-success"></div>
 
-            <!-- Table Responsive Wrapper -->
             <div class="table-responsive">
                 <table id="applicationsTable">
                     <thead>
@@ -104,21 +114,19 @@
 
     </main>
 
-    <!-- ============================================================= -->
-    <!-- MODAL 1: SCRUTINY & BRANCH ALLOCATION MODAL                   -->
-    <!-- ============================================================= -->
     <div id="scrutinyModal" class="modal-backdrop">
         <div class="modal-dialog">
             <div class="modal-header">
                 <div>
                     <h3 id="modalAppIdTitle">Application Scrutiny & Allocation</h3>
-                    <div style="font-size: 12px; color: #f4a261;" id="modalAppSubtitle">Reviewing candidate merit & documents</div>
+                    <div style="font-size: 12px; color: #f4a261;" id="modalAppSubtitle">Reviewing candidate merit &
+                        documents</div>
                 </div>
                 <button class="modal-close" onclick="closeScrutinyModal()">&times;</button>
             </div>
 
             <div class="modal-body">
-                <!-- Section A: Personal & Contact Information -->
+
                 <div class="form-section-title" style="margin-top: 0;">
                     <span class="section-num">1</span> Candidate Personal & Contact Information
                 </div>
@@ -141,7 +149,6 @@
                     </div>
                 </div>
 
-                <!-- Section B: Academic Qualifications -->
                 <div class="form-section-title">
                     <span class="section-num">2</span> Academic Merit & Exam Scores
                 </div>
@@ -160,15 +167,16 @@
                     </div>
                 </div>
 
-                <!-- Section C: Uploaded Documents Verification -->
                 <div class="form-section-title">
                     <span class="section-num">3</span> Uploaded Documents Verification
                 </div>
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                     <div>Current Status: <span id="modalDocStatusBadge" class="badge badge-pending">Pending</span></div>
                     <div style="display: flex; gap: 8px;">
-                        <button onclick="verifyDocuments('Documents Verified')" class="btn btn-success btn-sm">&#10004; Mark Documents Verified</button>
-                        <button onclick="verifyDocuments('Verification Rejected')" class="btn btn-danger btn-sm">&#10008; Reject Documents</button>
+                        <button onclick="verifyDocuments('Documents Verified')" class="btn btn-success btn-sm">&#10004;
+                            Mark Documents Verified</button>
+                        <button onclick="verifyDocuments('Verification Rejected')"
+                            class="btn btn-danger btn-sm">&#10008; Reject Documents</button>
                     </div>
                 </div>
 
@@ -183,40 +191,43 @@
                             </tr>
                         </thead>
                         <tbody id="modalDocListBody">
-                            <!-- Populated dynamically -->
+
                         </tbody>
                     </table>
                 </div>
 
-                <!-- Section D: Branch Preferences in Priority Order -->
                 <div class="form-section-title">
                     <span class="section-num">4</span> Branch Preferences in Priority Order
                 </div>
                 <p style="font-size: 13px; color: #64748b; margin-bottom: 8px;">
                     Submitted preference sequence chosen by candidate:
                 </p>
-                <ol id="modalPrefList" style="padding-left: 20px; line-height: 1.8; margin-bottom: 20px; color: #1e293b; font-size: 14px;">
-                    <!-- Populated dynamically -->
+                <ol id="modalPrefList"
+                    style="padding-left: 20px; line-height: 1.8; margin-bottom: 20px; color: #1e293b; font-size: 14px;">
+
                 </ol>
 
-                <!-- Section E: Branch Allocation Decision -->
                 <div class="form-section-title">
                     <span class="section-num">5</span> Branch Allocation Decision
                 </div>
 
-                <div style="background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 18px; margin-bottom: 10px;">
-                    <div style="margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
+                <div
+                    style="background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 18px; margin-bottom: 10px;">
+                    <div
+                        style="margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
                         <label style="font-weight: 700; color: #0d3b66;">Current Allocation Status:</label>
                         <span id="modalAllocStatusBadge" class="badge badge-pending">Pending Allocation</span>
                     </div>
 
                     <div class="form-group">
-                        <label for="allocBranchSelect">Assign Engineering Branch <span class="required-star">*</span></label>
+                        <label for="allocBranchSelect">Assign Engineering Branch <span
+                                class="required-star">*</span></label>
                         <select id="allocBranchSelect" class="form-control" style="font-weight: 600;">
                             <option value="">-- Choose Branch to Allocate --</option>
                             <option value="Computer Engineering">Computer Engineering</option>
                             <option value="Information Technology">Information Technology</option>
-                            <option value="Artificial Intelligence & Data Science">Artificial Intelligence & Data Science</option>
+                            <option value="Artificial Intelligence & Data Science">Artificial Intelligence & Data
+                                Science</option>
                             <option value="Electronics & Telecommunication">Electronics & Telecommunication</option>
                             <option value="Mechanical Engineering">Mechanical Engineering</option>
                             <option value="Civil Engineering">Civil Engineering</option>
@@ -225,7 +236,8 @@
 
                     <div class="form-group">
                         <label for="allocRemarksInput">Allocation Remarks / Instructions</label>
-                        <input type="text" id="allocRemarksInput" class="form-control" placeholder="e.g. Allotted in Round 1 based on CET Percentile merit under General Category.">
+                        <input type="text" id="allocRemarksInput" class="form-control"
+                            placeholder="e.g. Allotted in Round 1 based on CET Percentile merit under General Category.">
                     </div>
 
                     <div style="display: flex; gap: 10px; margin-top: 15px;">
@@ -241,14 +253,12 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeScrutinyModal()" style="background-color: #94a3b8; color: #ffffff;">Close</button>
+                <button type="button" class="btn btn-secondary" onclick="closeScrutinyModal()"
+                    style="background-color: #94a3b8; color: #ffffff;">Close</button>
             </div>
         </div>
     </div>
 
-    <!-- ============================================================= -->
-    <!-- MODAL 2: DOCUMENT PREVIEW MODAL                               -->
-    <!-- ============================================================= -->
     <div id="previewModal" class="modal-backdrop" style="z-index: 1100;">
         <div class="modal-dialog" style="max-width: 900px;">
             <div class="modal-header">
@@ -261,23 +271,21 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <a id="previewExternalLink" href="#" target="_blank" class="btn btn-accent btn-sm">&#8599; Open in New Tab</a>
+                <a id="previewExternalLink" href="#" target="_blank" class="btn btn-accent btn-sm">&#8599; Open in New
+                    Tab</a>
                 <a id="previewDownloadLink" href="#" download class="btn btn-primary btn-sm">&#128190; Download File</a>
-                <button type="button" class="btn btn-secondary btn-sm" onclick="closePreviewModal()" style="background-color: #94a3b8; color: #ffffff;">Close</button>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="closePreviewModal()"
+                    style="background-color: #94a3b8; color: #ffffff;">Close</button>
             </div>
         </div>
     </div>
 
-    <!-- Footer -->
     <footer>
         <p>&copy; 2026 State Common Entrance Test Cell • College Admission Portal</p>
     </footer>
 
-    <!-- ============================================================= -->
-    <!-- JAVASCRIPT: Admin API Interactions & Modal Logic              -->
-    <!-- ============================================================= -->
     <script>
-        // Display admin greeting
+
         const adminName = sessionStorage.getItem('adminName');
         if (adminName) {
             document.getElementById('adminGreeting').textContent = "Logged in: " + adminName + " (Admin Officer)";
@@ -289,7 +297,6 @@
 
         window.addEventListener('DOMContentLoaded', loadApplications);
 
-        // Fetch all applications
         function loadApplications() {
             fetch('/api/admin/applications')
                 .then(res => res.json())
@@ -332,13 +339,11 @@
                     pending++;
                 }
 
-                // Determine badge style for allocation status
                 let allocBadgeClass = 'badge-pending';
                 if (allocSt.includes('accepted') || overallSt.includes('confirmed')) allocBadgeClass = 'badge-confirmed';
                 else if (allocSt.includes('awaiting')) allocBadgeClass = 'badge-awaiting';
                 else if (allocSt.includes('rejected')) allocBadgeClass = 'badge-rejected';
 
-                // Count documents
                 const docKeys = Object.keys(app.documents || {});
                 const docCountText = docKeys.length > 0 ? `${docKeys.length} uploaded` : 'None';
                 let docBadgeClass = 'badge-pending';
@@ -388,7 +393,6 @@
             document.getElementById('statRejected').textContent = rejected;
         }
 
-        // Open Application Scrutiny & Allocation Modal
         function openScrutinyModal(appId) {
             const app = currentApplications.find(a => a.appId === appId);
             if (!app) return;
@@ -406,13 +410,11 @@
             document.getElementById('modalHsc').textContent = app.hsc.toFixed(2) + '%';
             document.getElementById('modalCet').textContent = app.cet.toFixed(2) + ' Percentile';
 
-            // Document status badge
             const docBadge = document.getElementById('modalDocStatusBadge');
             const vStatus = app.verificationStatus || 'Pending Verification';
             docBadge.textContent = vStatus;
             docBadge.className = 'badge ' + (vStatus === 'Documents Verified' ? 'badge-verified' : (vStatus === 'Verification Rejected' ? 'badge-rejected' : 'badge-pending'));
 
-            // Populate Document List
             const docListBody = document.getElementById('modalDocListBody');
             docListBody.innerHTML = '';
             const allTypes = [
@@ -449,7 +451,6 @@
                 docListBody.appendChild(tr);
             });
 
-            // Populate Preferences
             const prefList = document.getElementById('modalPrefList');
             prefList.innerHTML = '';
             const prefs = app.preferences || (app.course ? [app.course] : []);
@@ -459,13 +460,11 @@
                 prefList.appendChild(li);
             });
 
-            // Allocation State
             const allocBadge = document.getElementById('modalAllocStatusBadge');
             const aStatus = app.allocationStatus || 'Pending Allocation';
             allocBadge.textContent = aStatus;
             allocBadge.className = 'badge ' + (aStatus === 'Accepted' ? 'badge-confirmed' : (aStatus === 'Awaiting Student Acceptance' ? 'badge-awaiting' : (aStatus === 'Rejected' ? 'badge-rejected' : 'badge-pending')));
 
-            // Branch dropdown default to candidate's 1st preference or currently allocated branch
             const select = document.getElementById('allocBranchSelect');
             select.value = app.allocatedBranch || (prefs.length > 0 ? prefs[0] : '');
 
@@ -478,7 +477,6 @@
             document.getElementById('scrutinyModal').style.display = 'none';
         }
 
-        // Document Verification Action
         function verifyDocuments(status) {
             if (!activeApplication) return;
             const remarks = prompt(`Enter verification remarks for ${activeApplication.appId}:`,
@@ -495,19 +493,18 @@
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: fd.toString()
             })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    showNotification(data.message);
-                    loadApplications();
-                    closeScrutinyModal();
-                } else {
-                    alert(data.message);
-                }
-            });
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        showNotification(data.message);
+                        loadApplications();
+                        closeScrutinyModal();
+                    } else {
+                        alert(data.message);
+                    }
+                });
         }
 
-        // Branch Allocation Action
         function submitBranchAllocation() {
             if (!activeApplication) return;
             const branch = document.getElementById('allocBranchSelect').value;
@@ -528,19 +525,18 @@
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: fd.toString()
             })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    showNotification(data.message);
-                    loadApplications();
-                    closeScrutinyModal();
-                } else {
-                    alert(data.message);
-                }
-            });
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        showNotification(data.message);
+                        loadApplications();
+                        closeScrutinyModal();
+                    } else {
+                        alert(data.message);
+                    }
+                });
         }
 
-        // Reject Application from Modal
         function rejectApplicationModal() {
             if (!activeApplication) return;
             const remarks = prompt(`Enter rejection remarks for ${activeApplication.appId}:`, 'Did not satisfy branch cutoff / eligibility criteria.');
@@ -556,19 +552,18 @@
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: fd.toString()
             })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    showNotification(data.message);
-                    loadApplications();
-                    closeScrutinyModal();
-                } else {
-                    alert(data.message);
-                }
-            });
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        showNotification(data.message);
+                        loadApplications();
+                        closeScrutinyModal();
+                    } else {
+                        alert(data.message);
+                    }
+                });
         }
 
-        // Preview Document Modal
         function previewDocument(appId, docType, docTitle) {
             document.getElementById('previewDocTitle').textContent = `Document Preview: ${docTitle} (${appId})`;
             const container = document.getElementById('previewContainer');
@@ -580,7 +575,6 @@
             document.getElementById('previewExternalLink').href = viewUrl;
             document.getElementById('previewDownloadLink').href = downloadUrl;
 
-            // Find file extension to embed iframe or img
             const app = currentApplications.find(a => a.appId === appId);
             const fileName = (app && app.documents) ? (app.documents[docType] || '') : '';
 
@@ -606,4 +600,5 @@
     </script>
 
 </body>
+
 </html>
